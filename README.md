@@ -15,7 +15,8 @@ touch-based gamepad to your game when touch is enabled. The controller will *onl
 **Watch a demo video [here](http://www.youtube.com/watch?v=XQKRYMjrp2Q), or [try the game](http://clay.io/plugins/controller/index.html) out** (if you have a touch-capable device). 
 In Chrome, you can enable fake touch events with: ctrl+shift+i, then click the settings icon on the bottom right. 
 Select the "Overrides" tab, and check "Emulate touch events" at the bottom). The demo game isn't the most efficient on
-mobile devices in it's current state, but iOS Safari should handle it.
+mobile devices in it's current state, but iOS Safari should handle it. The game mentions to press the space key, the "B" button
+has been mapped to that functionality. This was a game that *completely* didn't work with touch prior to this library.
 
 As of January 20th 2013, tested in Chrome, Firefox, IE10, and Mobile Safari.
 
