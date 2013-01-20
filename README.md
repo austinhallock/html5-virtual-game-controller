@@ -39,7 +39,8 @@ The entire customization for this library is done through the options object tha
 This can be as simple as passing nothing, are as advanced as passing dozens of options.
 
 ```
-
+var options = {};
+GameController.init( options );
 ```
 
 Below is a list of the possible options, and what each does.
@@ -95,8 +96,7 @@ Examples
 ```
 GameController.init();
 ```
-
-**DPad on left, 2 buttons on right**  
+![http://clay.io/images/controller/1.png](GamePad 1)
 
 **Joystick on left, 1 button on right**  
 ```
@@ -120,6 +120,8 @@ GameController.init( {
     }
 } );
 ```
+![http://clay.io/images/controller/2.png](GamePad 2)
+
 **Joysticks on both sides**  
 ```
 GameController.init( { 
@@ -143,6 +145,7 @@ GameController.init( {
     }
 });
 ```
+![http://clay.io/images/controller/3.png](GamePad 3)
 
 **Two large buttons at bottom**  
 ```
@@ -159,6 +162,7 @@ GameController.init( {
 	right: false
 } );
 ```
+![http://clay.io/images/controller/4.png](GamePad 4)
 
 These examples are just the start - the customization allows for quite a bit to be done, 
 and of course, the code can always be edited as well.
