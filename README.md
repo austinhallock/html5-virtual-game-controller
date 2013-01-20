@@ -96,7 +96,7 @@ Examples
 ```
 GameController.init();
 ```
-![http://clay.io/images/controller/1.png](GamePad 1)
+![GamePad 1](http://clay.io/images/controller/1.png)
 
 **Joystick on left, 1 button on right**  
 ```
@@ -120,7 +120,7 @@ GameController.init( {
     }
 } );
 ```
-![http://clay.io/images/controller/2.png](GamePad 2)
+![GamePad 2](http://clay.io/images/controller/2.png)
 
 **Joysticks on both sides**  
 ```
@@ -145,7 +145,7 @@ GameController.init( {
     }
 });
 ```
-![http://clay.io/images/controller/3.png](GamePad 3)
+![GamePad 3](http://clay.io/images/controller/3.png)
 
 **Two large buttons at bottom**  
 ```
@@ -162,7 +162,7 @@ GameController.init( {
 	right: false
 } );
 ```
-![http://clay.io/images/controller/4.png](GamePad 4)
+![GamePad 4](http://clay.io/images/controller/4.png)
 
 These examples are just the start - the customization allows for quite a bit to be done, 
 and of course, the code can always be edited as well.
