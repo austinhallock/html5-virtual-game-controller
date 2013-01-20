@@ -81,11 +81,11 @@
 						height: '15%',
 						stroke: 2,
 						touchStart: function() {
-							this.simulateKeyEvent( 'press', 38 );
-							this.simulateKeyEvent( 'down', 38 );
+							GameController.simulateKeyEvent( 'press', 38 );
+							GameController.simulateKeyEvent( 'down', 38 );
 						},
 						touchEnd: function() {
-							this.simulateKeyEvent( 'up', 38 );
+							GameController.simulateKeyEvent( 'up', 38 );
 						}
 					},
 					left: {
@@ -93,11 +93,11 @@
 						height: '7%',
 						stroke: 2,
 						touchStart: function() {
-							this.simulateKeyEvent( 'press', 37 );
-							this.simulateKeyEvent( 'down', 37 );
+							GameController.simulateKeyEvent( 'press', 37 );
+							GameController.simulateKeyEvent( 'down', 37 );
 						},
 						touchEnd: function() {
-							this.simulateKeyEvent( 'up', 37 );
+							GameController.simulateKeyEvent( 'up', 37 );
 						}
 					},
 					down: {
@@ -105,11 +105,11 @@
 						height: '15%',
 						stroke: 2,
 						touchStart: function() {
-							this.simulateKeyEvent( 'press', 40 );
-							this.simulateKeyEvent( 'down', 40 );
+							GameController.simulateKeyEvent( 'press', 40 );
+							GameController.simulateKeyEvent( 'down', 40 );
 						},
 						touchEnd: function() {
-							this.simulateKeyEvent( 'up', 40 );
+							GameController.simulateKeyEvent( 'up', 40 );
 						}
 					},
 					right: {
@@ -117,11 +117,11 @@
 						height: '7%',
 						stroke: 2,
 						touchStart: function() {
-							this.simulateKeyEvent( 'press', 39 );
-							this.simulateKeyEvent( 'down', 39 );
+							GameController.simulateKeyEvent( 'press', 39 );
+							GameController.simulateKeyEvent( 'down', 39 );
 						},
 						touchEnd: function() {
-							this.simulateKeyEvent( 'up', 39 );
+							GameController.simulateKeyEvent( 'up', 39 );
 						}
 					}
 				},
