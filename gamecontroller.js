@@ -1,7 +1,7 @@
 /**
  * Helpers 
  */
-( function() {
+( function(exports) {
 	var __slice = [].slice;
 	var __hasProp = {}.hasOwnProperty;
 	var __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
@@ -68,7 +68,7 @@
 	}
 	
 	// Make available to window
-	window.GameController = {
+	exports.GameController = {
 		
 		// Default options,
 		options: {
@@ -1183,6 +1183,7 @@
 	 * Shim for requestAnimationFrame 
 	 */
 	( function() {
+	  if (typeof module !== "undefined") return
 		var lastTime = 0;
 		var vendors = ['ms', 'moz', 'webkit', 'o'];
 		for( var x = 0; x < vendors.length && !window.requestAnimationFrame; ++x )
@@ -1207,4 +1208,4 @@
 				clearTimeout( id );
 			};
 	}() );
-} ).call( this );
+} )(typeof module !== "undefined" ? module.exports : window)
