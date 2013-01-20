@@ -79,22 +79,50 @@
 					up: {
 						width: '7%',
 						height: '15%',
-						stroke: 2
+						stroke: 2,
+						touchStart: function() {
+							this.simulateKeyEvent( 'press', 38 );
+							this.simulateKeyEvent( 'down', 38 );
+						},
+						touchEnd: function() {
+							this.simulateKeyEvent( 'up', 38 );
+						}
 					},
 					left: {
 						width: '15%',
 						height: '7%',
-						stroke: 2
+						stroke: 2,
+						touchStart: function() {
+							this.simulateKeyEvent( 'press', 37 );
+							this.simulateKeyEvent( 'down', 37 );
+						},
+						touchEnd: function() {
+							this.simulateKeyEvent( 'up', 37 );
+						}
 					},
 					down: {
 						width: '7%',
 						height: '15%',
-						stroke: 2
+						stroke: 2,
+						touchStart: function() {
+							this.simulateKeyEvent( 'press', 40 );
+							this.simulateKeyEvent( 'down', 40 );
+						},
+						touchEnd: function() {
+							this.simulateKeyEvent( 'up', 40 );
+						}
 					},
 					right: {
 						width: '15%',
 						height: '7%',
-						stroke: 2
+						stroke: 2,
+						touchStart: function() {
+							this.simulateKeyEvent( 'press', 39 );
+							this.simulateKeyEvent( 'down', 39 );
+						},
+						touchEnd: function() {
+							this.simulateKeyEvent( 'up', 39 );
+						}
 					}
 				},
 				joystick: {
@@ -378,7 +406,6 @@
 				{
 					// Draw once more to remove the touch area
 					_this.render();
-					// TODO!!!!!!! Be able to enable pause again without the wonky effects
 					_this.paused = true;
 				}
 			};
@@ -487,13 +514,6 @@
 				dpad.up.x = posX - this.getPixels( dpad.up.width, 'y' ) / 2;
 				dpad.up.y = posY - ( this.getPixels( dpad.up.height, 'y' ) +  this.getPixels( dpad.left.height, 'y' ) / 2 );
 				dpad.up.direction = 'up';
-				dpad.up.touchStart = function() { // touchstart
-					_this.simulateKeyEvent( 'press', 38 );
-					_this.simulateKeyEvent( 'down', 38 );
-				};
-				dpad.up.touchEnd = function() { // touchend
-					_this.simulateKeyEvent( 'up', 38 );
-				};
 				this.addTouchableDirection( dpad.up );
 			}
 	
@@ -503,13 +523,6 @@
 				dpad.left.x = posX - ( this.getPixels( dpad.left.width, 'y' ) + this.getPixels( dpad.up.width, 'y' ) / 2 );
 				dpad.left.y = posY - ( this.getPixels( dpad.left.height, 'y' ) / 2 );
 				dpad.left.direction = 'left';
-				dpad.left.touchStart = function() { // touchstart
-					_this.simulateKeyEvent( 'press', 37 );
-					_this.simulateKeyEvent( 'down', 37 );
-				};
-				dpad.left.touchEnd = function() { // touchend
-					_this.simulateKeyEvent( 'up', 37 );
-				};
 				this.addTouchableDirection( dpad.left );
 			}
 	
@@ -519,13 +532,6 @@
 				dpad.down.x = posX - this.getPixels( dpad.down.width, 'y' ) / 2;
 				dpad.down.y = posY + ( this.getPixels( dpad.left.height, 'y' ) / 2 );
 				dpad.down.direction = 'down';
-				dpad.down.touchStart = function() { // touchstart
-					_this.simulateKeyEvent( 'press', 40 );
-					_this.simulateKeyEvent( 'down', 40 );
-				};
-				dpad.down.touchEnd = function() { // touchend
-					_this.simulateKeyEvent( 'up', 40 );
-				};
 				this.addTouchableDirection( dpad.down );
 			}
 			
@@ -535,13 +541,6 @@
 				dpad.right.x = posX + ( this.getPixels( dpad.up.width, 'y' ) / 2 );
 				dpad.right.y = posY - this.getPixels( dpad.right.height, 'y' ) / 2;
 				dpad.right.direction = 'right';
-				dpad.right.touchStart = function() { // touchstart
-					_this.simulateKeyEvent( 'press', 39 );
-					_this.simulateKeyEvent( 'down', 39 );
-				};
-				dpad.right.touchEnd = function() { // touchend
-					_this.simulateKeyEvent( 'up', 39 );
-				};
 				this.addTouchableDirection( dpad.right );
 			}
 			
