@@ -2,7 +2,6 @@
  * Helpers 
  */
 
-// TODO! Check joystick and other todos
 var __slice = [].slice;
 var __hasProp = {}.hasOwnProperty;
 var __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
@@ -25,8 +24,6 @@ function extend( target, src )
 	// Handle case when target is a string or something( possible in deep copy )
 	if( typeof target !== "object" && !typeof target === 'function' )
 	{
-		console.log(  'reset'  );
-		console.log(  target  );
 		target = {};
 	}
 	// Only deal with non-null/undefined values
@@ -63,7 +60,6 @@ function extend( target, src )
 			} 
 			else if( typeof copy !== 'undefined' ) 
 			{
-				console.log( name + ":" + target[name ] );
 				target[name] = copy;
 			}
 		}
@@ -112,6 +108,7 @@ var GameController = {
 			position: { right: '17%', bottom: '28%' }, 
 			buttons: [
 				{ offset: { x: '-13%', y: 0 }, label: 'X', radius: '7%', stroke: 2, backgroundColor: 'blue', fontColor: '#fff', touchStart: function() {
+					// Blue is currently mapped to up button
 					GameController.simulateKeyEvent( 'press', 38 );
 					GameController.simulateKeyEvent( 'down', 38 );
 				}, touchEnd: function() {
@@ -119,7 +116,7 @@ var GameController = {
 				} },
 				{ offset: { x: 0, y: '-11%' }, label: 'Y', radius: '7%', stroke: 2, backgroundColor: 'yellow', fontColor: '#fff' },
 				{ offset: { x: '13%', y: 0 }, label: 'B', radius: '7%', stroke: 2, backgroundColor: 'red', fontColor: '#fff', touchStart: function() {
-					// TODO: make this not super ubi land exclusive
+					// Red is currently mapped to down button, and space button
 					GameController.simulateKeyEvent( 'press', 32 );
 					GameController.simulateKeyEvent( 'down', 32 );
 
@@ -130,6 +127,7 @@ var GameController = {
 					GameController.simulateKeyEvent( 'up', 40 );
 				} },
 				{ offset: { x: 0, y: '11%' }, label: 'A', radius: '7%', stroke: 2, backgroundColor: 'green', fontColor: '#fff', touchStart: function() {
+					// Green is currently mapped to up button
 					GameController.simulateKeyEvent( 'press', 38 );
 					GameController.simulateKeyEvent( 'down', 38 );
 				}, touchEnd: function() {
@@ -189,8 +187,6 @@ var GameController = {
 		// Merge default options and specified options
 		options = options || {};
 		extend( this.options, options );	
-
-		console.log( this.options );
 		
 		// Grab the canvas if one wasn't passed
 		var ele;
@@ -237,18 +233,23 @@ var GameController = {
 		
 		// Starts up the rendering / drawing
 		this.render();
+		
+		if( ! this.touches || this.touches.length == 0 )
+			this.paused = true; // pause until a touch event
 	},
 	
+	pixelRatio: 1,
 	resize: function( firstTime ) {
 		// Scale to same size as original canvas
 		this.canvas.width = this.options.canvas.width;
 		this.canvas.height = this.options.canvas.height;
 		
 		// Get in on this retina action
-		if( this.options.canvas.style.width && this.options.canvas.style.width ) 
+		if( this.options.canvas.style.width && this.options.canvas.style.height && this.options.canvas.style.height.indexOf( 'px' ) !== -1 ) 
 		{
 			this.canvas.style.width = this.options.canvas.style.width;
 			this.canvas.style.height = this.options.canvas.style.height;
+			this.pixelRatio = this.canvas.width / parseInt( this.canvas.style.width );
 		}
 		
 		this.canvas.style.position = 'absolute';
@@ -341,31 +342,29 @@ var GameController = {
 		var _this = this;
 		var touchStart = function( e ) {
 			if( _this.paused )
-			{			
+			{
 				_this.paused = false;
-				_this.render(); // start up the rendering again
 			}
 				
 			e.preventDefault();
-						
+
 			// Microsoft always has to have their own stuff...
-			if( window.navigator.msPointerEnabled && e.currentPoint && e.currentPoint.rawPosition )
+			if( window.navigator.msPointerEnabled && e.clientX && e.pointerType == e.MSPOINTER_TYPE_TOUCH )
 			{
-				// TODO: fix IE10 being gay and not passing back pos
-				_this.touches[ e.pointerId ] = { clientX: e.currentPoint.rawPosition.x, clientY: e.currentPoint.rawPosition.y };
+				_this.touches[ e.pointerId ] = { clientX: e.clientX, clientY: e.clientY };
 			}
 			else
 			{
 				_this.touches = e.touches || [];
 			}
 		};
-		console.log( 'ttt' );
+
 		this.canvas.addEventListener( 'touchstart', touchStart, false );
 		
 		var touchEnd = function( e ) {			
 			e.preventDefault();
 		
-			if( window.navigator.msPointerEnabled )
+			if( window.navigator.msPointerEnabled && e.pointerType == e.MSPOINTER_TYPE_TOUCH )
 			{
 				delete _this.touches[ e.pointerId ];
 			}
@@ -379,7 +378,7 @@ var GameController = {
 				// Draw once more to remove the touch area
 				_this.render();
 				// TODO!!!!!!! Be able to enable pause again without the wonky effects
-				//_this.paused = true;
+				_this.paused = true;
 			}
 		};
 		this.canvas.addEventListener( 'touchend', touchEnd );
@@ -387,7 +386,14 @@ var GameController = {
 		var touchMove = function( e ) {
 			e.preventDefault();
 			
-			_this.touches = e.touches || [];
+			if( window.navigator.msPointerEnabled && e.clientX && e.pointerType == e.MSPOINTER_TYPE_TOUCH )
+			{
+				_this.touches[ e.pointerId ] = { clientX: e.clientX, clientY: e.clientY };				
+			}
+			else
+			{
+				_this.touches = e.touches || [];
+			}
 		};
 		this.canvas.addEventListener( 'touchmove', touchMove );
 		
@@ -544,7 +550,7 @@ var GameController = {
 		var joystick = this.options[ side ].joystick;
 		joystick.x = this.getPositionX( side );
 		joystick.y = this.getPositionY( side );
-		console.log( joystick );
+
 		this.addJoystick( joystick );
 	},
 	
@@ -577,8 +583,7 @@ var GameController = {
 	 */
 	normalizeTouchPositionX: function( x )
 	{
-		// TODO: in /pennapps game, moves to fast
-		return ( x - GameController.options.canvas.offsetLeft + document.body.scrollLeft ) * ( window.devicePixelRatio || 1 );
+		return ( x - GameController.options.canvas.offsetLeft + document.body.scrollLeft ) * ( this.pixelRatio );
 	},
 	
 	/**
@@ -587,7 +592,7 @@ var GameController = {
 	 */
 	normalizeTouchPositionY: function( y )
 	{
-		return ( y - GameController.options.canvas.offsetTop + document.body.scrollTop ) * ( window.devicePixelRatio || 1 );
+		return ( y - GameController.options.canvas.offsetTop + document.body.scrollTop ) * ( this.pixelRatio );
 	},
 	
 	/**
@@ -630,43 +635,49 @@ var GameController = {
 	},
 	
 	render: function() {
-		if( this.paused )
-			return;
-			
-		this.ctx.clearRect( 0, 0, this.canvas.width, this.canvas.height );
-	
-		var cacheId = 'touch-circle';
-		var cached = GameController.cachedSprites[ cacheId ];
-		if( ! cached && this.options.touchRadius )
-		{
-			var subCanvas = document.createElement( 'canvas' );
-			var ctx = subCanvas.getContext( '2d' );
-			subCanvas.width = 2 * this.options.touchRadius;
-			subCanvas.height = 2 * this.options.touchRadius;
 
-			var center = this.options.touchRadius;
-			var gradient = ctx.createRadialGradient( center, center, 1, center, center, this.options.touchRadius ); // 10 = end radius
-			gradient.addColorStop( 0, 'rgba( 200, 200, 200, 1 )' );
-			gradient.addColorStop( 1, 'rgba( 200, 200, 200, 0 )' );
-			ctx.beginPath();
-			ctx.fillStyle = gradient;
-			ctx.arc( center, center, this.options.touchRadius, 0 , 2 * Math.PI, false );
-			ctx.fill();
-		
-			cached = GameController.cachedSprites[ cacheId ] = subCanvas;
-		}
-		
-		// Draw the current touch positions if any
-		for( var i = 0, j = this.touches.length; i < j; i++ )
+		this.ctx.clearRect( 0, 0, this.canvas.width, this.canvas.height );
+			
+		// When no touch events are happening, this enables 'paused' mode, which only skips this small part.
+		// Skipping the clearRect and draw()s would be nice, but it messes with the transparent gradients
+		if( ! this.paused )
 		{
-			var touch = this.touches[ i ];
-			var x = this.normalizeTouchPositionX( touch.clientX ), y = this.normalizeTouchPositionY( touch.clientY );
-			this.ctx.drawImage( cached, x - this.options.touchRadius, y - this.options.touchRadius );
+			var cacheId = 'touch-circle';
+			var cached = GameController.cachedSprites[ cacheId ];
+			if( ! cached && this.options.touchRadius )
+			{
+				var subCanvas = document.createElement( 'canvas' );
+				var ctx = subCanvas.getContext( '2d' );
+				subCanvas.width = 2 * this.options.touchRadius;
+				subCanvas.height = 2 * this.options.touchRadius;
+	
+				var center = this.options.touchRadius;
+				var gradient = ctx.createRadialGradient( center, center, 1, center, center, this.options.touchRadius ); // 10 = end radius
+				gradient.addColorStop( 0, 'rgba( 200, 200, 200, 1 )' );
+				gradient.addColorStop( 1, 'rgba( 200, 200, 200, 0 )' );
+				ctx.beginPath();
+				ctx.fillStyle = gradient;
+				ctx.arc( center, center, this.options.touchRadius, 0 , 2 * Math.PI, false );
+				ctx.fill();
+			
+				cached = GameController.cachedSprites[ cacheId ] = subCanvas;
+			}
+			
+			// Draw the current touch positions if any
+			for( var i = 0, j = this.touches.length; i < j; i++ )
+			{
+				var touch = this.touches[ i ];
+				if( typeof touch === 'undefined' )
+					continue;
+				var x = this.normalizeTouchPositionX( touch.clientX ), y = this.normalizeTouchPositionY( touch.clientY );
+				this.ctx.drawImage( cached, x - this.options.touchRadius, y - this.options.touchRadius );
+			}
 		}
 		
 		for( var i = 0, j = this.touchableAreas.length; i < j; i++ )
 		{	
 			this.touchableAreas[ i ].draw();
+			
 			var area = this.touchableAreas[ i ];
 				
 			// Go through all touches to see if any hit this area
@@ -674,6 +685,8 @@ var GameController = {
 			for( var k = 0, l = this.touches.length; k < l; k++ )
 			{
 				var touch = this.touches[ k ];
+				if( typeof touch === 'undefined' )
+					continue;
 
 				var x = this.normalizeTouchPositionX( touch.clientX ), y = this.normalizeTouchPositionY( touch.clientY );
 												
@@ -692,17 +705,17 @@ var GameController = {
 			}
 			else if( area.active )
 			{
-				console.log( "END" );
-				console.log( area );
 				area.touchEndWrapper( touched );
 			}
-			
-			// Start back up the draw function
-			this.paused = false;
 		}
 		
-		// TODO: Make this not create a new obj each render (garbage)
-		window.requestAnimationFrame( function() { GameController.render() } );
+		window.requestAnimationFrame( this.renderWrapper );
+	},
+	/**
+	 * So we can keep scope, and don't have to create a new obj every requestAnimationFrame (bad for garbage collection) 
+	 */
+	renderWrapper: function() {
+		GameController.render();
 	}
 	
 }
@@ -786,7 +799,6 @@ var TouchableArea = ( function() {
 	 * Called when this direction is first touched 
 	 */
 	TouchableArea.prototype.touchEndWrapper = function( e ) {
-		console.log( "END" );
 		// Fire the user specified callback
 		if( this.touchEnd )
 			this.touchEnd();

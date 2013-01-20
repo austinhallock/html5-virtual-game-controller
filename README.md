@@ -3,22 +3,31 @@ HTML5 Virtual Game Controller
 
 About
 -----
+Author: [Clay.io](http://clay.io/devlanding) - Tools for HTML5 game developers
+
+**[[DEMO]](http://clay.io/plugins/controller-demo.html)** - be sure to have touch enabled! This game isn't the most efficient on
+mobile devices in it's current state, but iOS Safari should handle it.
+
 This library is for easy integration of a virtual game controller overlay for HTML5 games. With HTML5, it's easy to 
 get your game to run on touch-screen devices like phones and tablets, but user-input is a whole different story. With
 just the accelerometer and touch to work with, it makes it hard to have a game's input pair well with the desktop version.
 
+The controller will only be shown in touch is enabled on the device.
+
 The HTML5 Virtual Game Controller aims to alleviate the problem with a super-simple, yet customizable option for adding a 
 touch-based gamepad to your game.
 
-See a demo [here](http://www.youtube.com/watch?v=XQKRYMjrp2Q), or try the game out in Chrome with touch events enabled (ctrl+shift+i,
-then click the settings icon on the bottom right. Select the "Overrides" tab, and check "Emulate touch events" at the bottom)
+See a demo [here](http://www.youtube.com/watch?v=XQKRYMjrp2Q), or [try the game](http://clay.io/plugins/controller-demo.html) out in Chrome with touch events enabled (ctrl+shift+i,
+then click the settings icon on the bottom right. Select the "Overrides" tab, and check "Emulate touch events" at the bottom).
+
+As of January 20th 2013, tested in Chrome, Firefox, IE10, and Mobile Safari.
 
 Easy Setup
 ----------
 ```
-<script type='text/javascript' src='/js/gamecontroller.js'></script>
+<script type='text/javascript' src='/path/to/gamecontroller.js'></script>
 <script type='text/javascript'>
-    $( function() { // jQuery *not* required
+    $( function() { // jQuery *not* required - just be to call onload
 		GameController.init();
 	} );
 </script>
@@ -45,35 +54,41 @@ Below is a list of the possible options, and what each does.
      * **bottom** {int/string} - same as *top*, just from the bottom side of the canvas. Only specify one of top or bottom. *Default: 22%*
   * **dpad** {object} - options pertaining to the dpad for this section (only has effect if *type* is set to 'dpad'
      * **up** {object} - options pertaining to the up direction of the dpad
-         * **width**
-         * **height**
-         * **stroke**
-         * **opacity**
-         * **touchStart**
-         * **touchEnd**
-         * **touchMove**
+         * **width** {int/string} - pixels (int) or percent ('x%') wide
+         * **height** {int/string} - pixels (int) or percent ('x%') high
+         * **stroke** {int} - thickness of stroke (in pixels)
+         * **opacity** {float} - value from 0-1 for how opaque this should be
+         * **touchStart** {function} - called when this direction is touched
+         * **touchEnd** {function} - called when this direction is no longer touched
+         * **touchMove** {function} - called on any movement while player is touching object
      * **right** {object} - the same object properties from *up* are available for *right*
      * **down** {object} - the same object properties from *up* are available for *down*
      * **left** {object} - the same object properties from *up* are available for *left*
   * **buttons** [] - array of button objects for this section (only has effect if type is set to 'buttons'
      * **button object**
-         * **offset**
-             * **x**
-             * **y**
-         * **label**
-         * **radius**
-         * **stroke**
-         * **backgroundColor**
-         * **fontColor**
+         * **offset** {object} - offset for each button from the center position
+             * **x** {int/string} - pixels (int) or percent ('x%') from center on x-axis
+             * **y** {int/string} - pixels (int) or percent ('x%') from center on x-axis
+         * **label** {string} - short label for this button
+         * **radius** {int} - button radius in pixels
+         * **stroke** {int} - stroke thickness in pixels
+         * **backgroundColor** {string} - currently you have 5 options for this since gradients are used: 'blue', 'green', 'yellow', 'red', 'white'
+         * **fontColor** {string} - hex code
          * **fontSize** {int} - size of the label font in pixels
-         * **touchStart**
-         * **touchEnd**
-         * **touchMove**
-  * **joystick**
-     * **radius**
-     * **touchStart**
-     * **touchEnd**
-     * **touchMove**
+         * **touchStart** {function} - called when this direction is touched
+         * **touchEnd** {function} - called when this direction is no longer touched
+         * **touchMove** {function} - called on any movement while player is touching object
+  * **joystick** {object} - options pertaining to the dpad for this section (only has effect if *type* is set to 'dpad'
+     * **radius** {int} joystick button radius in pixels
+         * **touchStart** {function} - called when this direction is touched
+         * **touchEnd** {function} - called when this direction is no longer touched
+         * **touchMove** {function} - called on any movement while player is touching object. An object with the following properties is passed as the only parameter:
+             * **dx** {float} - the distance on x axis the joystick is from the center
+             * **dy** {float} - the distance on y axis the joystick is from the center
+             * **max** {int} - the max distance the joystick can get from the center
+             * **normalizedX** {float} - ranges from -1 to 1 where -1 is as far left as possible, and 1 is as far right as possible. 0 is center
+             * **normalizedY** - ranges from -1 to 1 where -1 is as far up as possible, and 1 is as far down as possible. 0 is center
+
 Examples
 --------
 **DPad on left, 2 buttons on right**  
@@ -145,4 +160,5 @@ GameController.init( {
 } );
 ```
 
-These examples are just the start!
+These examples are just the start - the customization allows for quite a bit to be done, 
+and of course, the code can always be edited as well.
