@@ -5,20 +5,17 @@ About
 -----
 Author: [Clay.io](http://clay.io/devlanding) - Tools for HTML5 game developers
 
-**[[DEMO]](http://clay.io/plugins/controller-demo.html)** - be sure to have touch enabled! This game isn't the most efficient on
-mobile devices in it's current state, but iOS Safari should handle it.
-
 This library is for easy integration of a virtual game controller overlay for HTML5 games. With HTML5, it's easy to 
 get your game to run on touch-screen devices like phones and tablets, but user-input is a whole different story. With
 just the accelerometer and touch to work with, it makes it hard to have a game's input pair well with the desktop version.
 
-The controller will only be shown in touch is enabled on the device.
-
 The HTML5 Virtual Game Controller aims to alleviate the problem with a super-simple, yet customizable option for adding a 
-touch-based gamepad to your game.
+touch-based gamepad to your game when touch is enabled. The controller will *only* be shown in touch is available on the device.
 
-See a demo [here](http://www.youtube.com/watch?v=XQKRYMjrp2Q), or [try the game](http://clay.io/plugins/controller-demo.html) out in Chrome with touch events enabled (ctrl+shift+i,
-then click the settings icon on the bottom right. Select the "Overrides" tab, and check "Emulate touch events" at the bottom).
+Watch a demo video [here](http://www.youtube.com/watch?v=XQKRYMjrp2Q), or [try the game](http://clay.io/plugins/controller-demo.html) out. 
+In Chrome, you can enable fake touch events with: ctrl+shift+i, then click the settings icon on the bottom right. 
+Select the "Overrides" tab, and check "Emulate touch events" at the bottom). The demo game isn't the most efficient on
+mobile devices in it's current state, but iOS Safari should handle it.
 
 As of January 20th 2013, tested in Chrome, Firefox, IE10, and Mobile Safari.
 
