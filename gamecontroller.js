@@ -3,12 +3,11 @@
  */
 
 // TODO! Check joystick and other todos
-
 var __slice = [].slice;
 var __hasProp = {}.hasOwnProperty;
 var __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 /* $.extend functionality */
-function extend( src, target )
+function extend( target, src )
 {
 	var options, name, copy, copyIsArray, clone,
 		i = 1,
@@ -45,7 +44,7 @@ function extend( src, target )
 				continue;
 			}
 			// Recurse if we're merging plain objects or arrays
-			if( deep && copy &&( typeof copy == 'object' ||( copyIsArray = Object.prototype.toString.call(  copy  ) === '[object Array]' ) ) ) 
+			if( deep &&( typeof copy == 'object' ||( copyIsArray = Object.prototype.toString.call(  copy  ) === '[object Array]' ) ) ) 
 			{
 				if( copyIsArray ) 
 				{
@@ -62,8 +61,9 @@ function extend( src, target )
 
 				// Don't bring in undefined values
 			} 
-			else if( copy !== undefined ) 
+			else if( typeof copy !== 'undefined' ) 
 			{
+				console.log( name + ":" + target[name ] );
 				target[name] = copy;
 			}
 		}
@@ -73,17 +73,11 @@ function extend( src, target )
 
 var GameController = {
 	
-	// Default options
+	// Default options,
 	options: {
 		left: { 
 			type: 'dpad', 
 			position: { left: '13%', bottom: '22%' },
-			/*joystick: {
-				radius: 60,
-				touchMove: function( e ) {
-					console.log( e );
-				}
-			},*/
 			dpad: {
 				up: {
 					width: '7%',
@@ -105,21 +99,26 @@ var GameController = {
 					height: '7%',
 					stroke: 2
 				}
+			},
+			joystick: {
+				radius: 60,
+				touchMove: function( e ) {
+					console.log( e );
+				}
 			}
 		},
 		right: { 
 			type: 'buttons', 
 			position: { right: '17%', bottom: '28%' }, 
 			buttons: [
-				{ offset: { x: '-13%', y: 0 }, label: 'X', radius: '7%', stroke: 2, backgroundColor: 'blue', touchStart: function() {
+				{ offset: { x: '-13%', y: 0 }, label: 'X', radius: '7%', stroke: 2, backgroundColor: 'blue', fontColor: '#fff', touchStart: function() {
 					GameController.simulateKeyEvent( 'press', 38 );
 					GameController.simulateKeyEvent( 'down', 38 );
 				}, touchEnd: function() {
 					GameController.simulateKeyEvent( 'up', 38 );	
 				} },
-				{ offset: { x: 0, y: '-11%' }, label: 'Y', radius: '7%', stroke: 2, backgroundColor: 'yellow' },
-				{ offset: { x: '13%', y: 0 }, label: 'B', radius: '7%', stroke: 2, backgroundColor: 'red', touchStart: function() {
-					console.log( "SPACE" );
+				{ offset: { x: 0, y: '-11%' }, label: 'Y', radius: '7%', stroke: 2, backgroundColor: 'yellow', fontColor: '#fff' },
+				{ offset: { x: '13%', y: 0 }, label: 'B', radius: '7%', stroke: 2, backgroundColor: 'red', fontColor: '#fff', touchStart: function() {
 					// TODO: make this not super ubi land exclusive
 					GameController.simulateKeyEvent( 'press', 32 );
 					GameController.simulateKeyEvent( 'down', 32 );
@@ -130,13 +129,41 @@ var GameController = {
 					GameController.simulateKeyEvent( 'up', 32 );						
 					GameController.simulateKeyEvent( 'up', 40 );
 				} },
-				{ offset: { x: 0, y: '11%' }, label: 'A', radius: '7%', stroke: 2, backgroundColor: 'green', touchStart: function() {
+				{ offset: { x: 0, y: '11%' }, label: 'A', radius: '7%', stroke: 2, backgroundColor: 'green', fontColor: '#fff', touchStart: function() {
 					GameController.simulateKeyEvent( 'press', 38 );
 					GameController.simulateKeyEvent( 'down', 38 );
 				}, touchEnd: function() {
 					GameController.simulateKeyEvent( 'up', 38 );	
 				}  }
-			]
+			],
+			dpad: {
+				up: {
+					width: '7%',
+					height: '15%',
+					stroke: 2
+				},
+				left: {
+					width: '15%',
+					height: '7%',
+					stroke: 2
+				},
+				down: {
+					width: '7%',
+					height: '15%',
+					stroke: 2
+				},
+				right: {
+					width: '15%',
+					height: '7%',
+					stroke: 2
+				}
+			},
+			joystick: {
+				radius: 60,
+				touchMove: function( e ) {
+					console.log( e );
+				}
+			}
 		},
 		touchRadius: 45
 	},
@@ -157,10 +184,13 @@ var GameController = {
 		// Don't do anything if there's no touch support
 		if( ! 'ontouchstart' in document.documentElement )
 			return;
+			
 
 		// Merge default options and specified options
-		extend( options, this.options );	
+		options = options || {};
+		extend( this.options, options );	
 
+		console.log( this.options );
 		
 		// Grab the canvas if one wasn't passed
 		var ele;
@@ -180,33 +210,8 @@ var GameController = {
 	},
 	
 	/**
-	 * @param {string} side - 'left', 'right' (Optional) 
+	 * Creates the canvas that sits on top of the game's canvas and holds game controls 
 	 */
-	/*
-	getJoystickDeltaX: function( side ) {
-		if( typeof side === 'undefined' || ( side !== 'left' && side !== 'right' ) )
-		{
-			// No side is specified, find which side has a joystick
-			if( this.options[ 'left' ].type === 'joystick' )
-				side = 'left';
-			else if( this.options[ 'right' ].type === 'joystick' )
-				side = 'right'
-		}
-		if( side && this.options[ side ].joystick. )
-			return false;
-		else
-			
-	}
-	
-	getJoystickDeltaY: function( side ) {
-		
-	}
-	
-	getJoystickDeltaMax: function( side ) {
-		
-	}
-	*/
-	
 	createOverlayCanvas: function() {
 		this.canvas = document.createElement( 'canvas' );
 		
@@ -270,10 +275,10 @@ var GameController = {
 	 */
 	getPixels: function( value, axis )
 	{
-		if( typeof value === 'number' )
-		{
+		if( typeof value === 'undefined' )
+			return 0
+		else if( typeof value === 'number' )
 			return value;
-		}
 		else // a percentage
 		{
 			if( axis == 'x' )
@@ -292,18 +297,32 @@ var GameController = {
 		if( typeof window.onkeydown === 'undefined' ) // No keyboard, can't simulate...
 			return false;
 			
+		/* If they have jQuery, use it because it works better for mobile safari */
+		if( jQuery )
+		{
+			var press = jQuery.Event( 'key' + eventName );
+			press.ctrlKey = false;
+			press.which = keyCode;
+			$( document ).trigger( press );
+			return;
+		}
+
 		var oEvent = document.createEvent( 'KeyboardEvent' );
+		
 		// Chromium Hack
-		Object.defineProperty( oEvent, 'keyCode', {
-			get : function() {
-				return this.keyCodeVal;
-			}
-		} );	 
-		Object.defineProperty( oEvent, 'which', {
-			get : function() {
-				return this.keyCodeVal;
-			}
-		} );
+		if( navigator.userAgent.toLowerCase().indexOf('chrome') !== -1 )
+		{
+			Object.defineProperty( oEvent, 'keyCode', {
+				get : function() {
+					return this.keyCodeVal;
+				}
+			} );	 
+			Object.defineProperty( oEvent, 'which', {
+				get : function() {
+					return this.keyCodeVal;
+				}
+			} );
+		}
 			
 		if( oEvent.initKeyboardEvent )
 		{
@@ -311,12 +330,11 @@ var GameController = {
 		}
 		else
 		{
-			oEvent.initKeyEvent( 'key' + eventName, true, true, document.defaultView, false, false, false, false, keyCode, 0 );
+			oEvent.initKeyEvent( 'key' + eventName, true, true, document.defaultView, false, false, false, false, keyCode, keyCode );
 		}
 	
 		oEvent.keyCodeVal = keyCode;
 	
-		document.dispatchEvent( oEvent );
 	},
 	
 	setTouchEvents: function() {
@@ -341,7 +359,8 @@ var GameController = {
 				_this.touches = e.touches || [];
 			}
 		};
-		this.canvas.addEventListener( 'touchstart', touchStart );
+		console.log( 'ttt' );
+		this.canvas.addEventListener( 'touchstart', touchStart, false );
 		
 		var touchEnd = function( e ) {			
 			e.preventDefault();
@@ -401,7 +420,6 @@ var GameController = {
 		
 		joystick.id = this.touchableAreas.push( joystick );
 		
-		console.log( joystick );
 	},
 	
 	/**
@@ -455,7 +473,7 @@ var GameController = {
 			var center = new TouchableCircle( options ); 
 			this.touchableAreas.push( center );
 		}
-		
+
 		// Up arrow
 		if( dpad.up !== false )
 		{
@@ -559,7 +577,8 @@ var GameController = {
 	 */
 	normalizeTouchPositionX: function( x )
 	{
-		return ( x - GameController.options.canvas.offsetLeft ) * ( window.devicePixelRatio || 1 );
+		// TODO: in /pennapps game, moves to fast
+		return ( x - GameController.options.canvas.offsetLeft + document.body.scrollLeft ) * ( window.devicePixelRatio || 1 );
 	},
 	
 	/**
@@ -568,7 +587,7 @@ var GameController = {
 	 */
 	normalizeTouchPositionY: function( y )
 	{
-		return ( y - GameController.options.canvas.offsetTop ) * ( window.devicePixelRatio || 1 );
+		return ( y - GameController.options.canvas.offsetTop + document.body.scrollTop ) * ( window.devicePixelRatio || 1 );
 	},
 	
 	/**
@@ -618,7 +637,7 @@ var GameController = {
 	
 		var cacheId = 'touch-circle';
 		var cached = GameController.cachedSprites[ cacheId ];
-		if( ! cached )
+		if( ! cached && this.options.touchRadius )
 		{
 			var subCanvas = document.createElement( 'canvas' );
 			var ctx = subCanvas.getContext( '2d' );
@@ -739,13 +758,18 @@ var TouchableArea = ( function() {
 	};
 	
 	/**
-	 * Called when this direction is moved
+	 * Called when this direction is moved. Make sure it's actually changed before passing to developer
 	 */
+	TouchableArea.prototype.lastPosX = 0;
+	TouchableArea.prototype.lastPosY = 0;
 	TouchableArea.prototype.touchMoveWrapper = function( e ) {
 		// Fire the user specified callback
-		if( this.touchMove )
+		if( this.touchMove && ( e.clientX != TouchableArea.prototype.lastPosX || e.clientY != TouchableArea.prototype.lastPosY ) )
+		{
 			this.touchMove();
-		
+			this.lastPosX = e.clientX;
+			this.lastPosY = e.clientY;
+		}
 		// Mark this direction as inactive
 		this.active = true;
 	};
@@ -960,14 +984,14 @@ var TouchableButton = ( function( __super ) {
 			{
 				// Text Shadow
 				ctx.fillStyle = textShadowColor;
-				ctx.font = 'bold 24px Verdana'; // TODO: scale
+				ctx.font = 'bold ' + ( this.fontSize || subCanvas.height * 0.35 ) + 'px Verdana';
 				ctx.textAlign = 'center';
 				ctx.textBaseline = 'middle';
 				ctx.fillText( this.label, subCanvas.height / 2 + 2, subCanvas.height / 2 + 2 );
 	
 	
-				ctx.fillStyle = '#fff'; // TODO option?
-				ctx.font = 'bold 24px Verdana'; // TODO: scale
+				ctx.fillStyle = this.fontColor;
+				ctx.font = 'bold ' + ( this.fontSize || subCanvas.height * 0.35 ) + 'px Verdana';
 				ctx.textAlign = 'center';
 				ctx.textBaseline = 'middle';
 				ctx.fillText( this.label, subCanvas.height / 2, subCanvas.height / 2 );
@@ -1031,13 +1055,16 @@ var TouchableJoystick = ( function( __super ) {
 		// Fire the user specified callback
 		if( this.touchMove )
 		{
-			this.moveDetails.dx = this.currentX - this.x; // reverse so right is positive
-			this.moveDetails.dy = this.y - this.currentY;
-			this.moveDetails.max = this.radius + ( GameController.options.touchRadius / 2 );
-			this.moveDetails.normalizedX = this.moveDetails.dx / this.moveDetails.max;
-			this.moveDetails.normalizedY = this.moveDetails.dy / this.moveDetails.max;
-				
-			this.touchMove( this.moveDetails );
+			if( this.moveDetails.dx != this.currentX - this.x && this.moveDetails.dy != this.y - this.currentY )
+			{
+				this.moveDetails.dx = this.currentX - this.x; // reverse so right is positive
+				this.moveDetails.dy = this.y - this.currentY;
+				this.moveDetails.max = this.radius + ( GameController.options.touchRadius / 2 );
+				this.moveDetails.normalizedX = this.moveDetails.dx / this.moveDetails.max;
+				this.moveDetails.normalizedY = this.moveDetails.dy / this.moveDetails.max;
+					
+				this.touchMove( this.moveDetails );
+			}
 		}
 			
 		
@@ -1054,13 +1081,14 @@ var TouchableJoystick = ( function( __super ) {
 		if( ! cached )
 		{
 			var subCanvas = document.createElement( 'canvas' );
-			subCanvas.width = subCanvas.height = 2 * this.radius;
+			this.stroke = this.stroke || 2;
+			subCanvas.width = subCanvas.height = 2 * ( this.radius + this.stroke );
 			
 			var ctx = subCanvas.getContext( '2d' );
-			ctx.lineWidth = 2;
+			ctx.lineWidth = this.stroke;
 			if( this.active ) // Direction currently being touched
 			{
-				var gradient = ctx.createRadialGradient( this.x, this.y, 1, this.x, this.y, this.radius );
+				var gradient = ctx.createRadialGradient( 0, 0, 1, 0, 0, this.radius );
 				gradient.addColorStop( 0, 'rgba( 200,200,200,.5 )' );
 				gradient.addColorStop( 1, 'rgba( 200,200,200,.9 )' );
 				ctx.strokeStyle = '#000';
@@ -1068,7 +1096,7 @@ var TouchableJoystick = ( function( __super ) {
 			else
 			{
 				// STYLING FOR BUTTONS
-				var gradient = ctx.createRadialGradient( this.x, this.y, 1, this.x, this.y, this.radius );
+				var gradient = ctx.createRadialGradient( 0, 0, 1, 0, 0, this.radius );
 				gradient.addColorStop( 0, 'rgba( 200,200,200,.2 )' );
 				gradient.addColorStop( 1, 'rgba( 200,200,200,.4 )' );
 				ctx.strokeStyle = 'rgba( 0,0,0,.4 )';
@@ -1076,20 +1104,22 @@ var TouchableJoystick = ( function( __super ) {
 			ctx.fillStyle = gradient;
 			// Actual joystick part that is being moved
 			ctx.beginPath();
-			ctx.arc( this.currentX, this.currentY, this.radius, 0 , 2 * Math.PI, false );
+			ctx.arc( this.radius, this.radius, this.radius, 0 , 2 * Math.PI, false );
 			ctx.fill();
 			ctx.stroke();
 			
 			cached = GameController.cachedSprites[ cacheId ] = subCanvas;
 		}
 		
-		GameController.ctx.drawImage( cached, 0, 0 );
-		
 		// Draw the base that stays static
+		GameController.ctx.fillStyle = '#444';
 		GameController.ctx.beginPath();
 		GameController.ctx.arc( this.x, this.y, this.radius * 0.7, 0 , 2 * Math.PI, false );
 		GameController.ctx.fill();
 		GameController.ctx.stroke();
+		
+		GameController.ctx.drawImage( cached, this.currentX - this.radius, this.currentY - this.radius );
+		
 		
 	};
 	
