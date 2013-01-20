@@ -12,7 +12,7 @@ just the accelerometer and touch to work with, it makes it hard to have a game's
 The HTML5 Virtual Game Controller aims to alleviate the problem with a super-simple, yet customizable option for adding a 
 touch-based gamepad to your game when touch is enabled. The controller will *only* be shown in touch is available on the device.
 
-**Watch a demo video [here](http://www.youtube.com/watch?v=XQKRYMjrp2Q), or [try the game](http://clay.io/plugins/controller-demo.html) out** (if you have a touch-capable device). 
+**Watch a demo video [here](http://www.youtube.com/watch?v=XQKRYMjrp2Q), or [try the game](http://clay.io/plugins/controller/index.html) out** (if you have a touch-capable device). 
 In Chrome, you can enable fake touch events with: ctrl+shift+i, then click the settings icon on the bottom right. 
 Select the "Overrides" tab, and check "Emulate touch events" at the bottom). The demo game isn't the most efficient on
 mobile devices in it's current state, but iOS Safari should handle it.
