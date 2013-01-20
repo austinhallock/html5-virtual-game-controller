@@ -1,61 +1,76 @@
 /**
- * TODO: Better performing option 
+ * Helpers 
  */
+
+// TODO! Check joystick and other todos
+
 var __slice = [].slice;
 var __hasProp = {}.hasOwnProperty;
 var __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
-// TODO: prettify
 /* $.extend functionality */
-function extend (src, target) {
+function extend( src, target )
+{
 	var options, name, copy, copyIsArray, clone,
-        i = 1,
-        length = 2,
-        deep = true;
+		i = 1,
+		length = 2,
+		deep = true;
 
-    // Handle a deep copy situation
-    if (typeof target === "boolean") {
-        deep = target;
-        // skip the boolean and the target
-        i = 2;
-    }
+	// Handle a deep copy situation
+	if( typeof target === "boolean" )
+	{
+		deep = target;
+		// skip the boolean and the target
+		i = 2;
+	}
 
-    // Handle case when target is a string or something (possible in deep copy)
-    if (typeof target !== "object" && !typeof target === 'function') {
-    	console.log( 'reset' );
-    	console.log( target );
-        target = {};
-    }
-    // Only deal with non-null/undefined values
-    if (options = src) {
-        // Extend the base object
-        for (name in options) {
-            src = target[name];
-            copy = options[name];
+	// Handle case when target is a string or something( possible in deep copy )
+	if( typeof target !== "object" && !typeof target === 'function' )
+	{
+		console.log(  'reset'  );
+		console.log(  target  );
+		target = {};
+	}
+	// Only deal with non-null/undefined values
+	if( options = src )
+	{
+		// Extend the base object
+		for( name in options )
+		{
+			src = target[name];
+			copy = options[name];
 
-            // Prevent never-ending loop
-            if (target === copy) {
-                continue;
-            }
-            // Recurse if we're merging plain objects or arrays
-            if (deep && copy && (typeof copy == 'object' || (copyIsArray = Object.prototype.toString.call( copy ) === '[object Array]'))) {
-                if (copyIsArray) {
-                    copyIsArray = false;
-                    clone = src && Object.prototype.toString.call( src ) === '[object Array]' ? src : [];
+			// Prevent never-ending loop
+			if( target === copy )
+			{
+				continue;
+			}
+			// Recurse if we're merging plain objects or arrays
+			if( deep && copy &&( typeof copy == 'object' ||( copyIsArray = Object.prototype.toString.call(  copy  ) === '[object Array]' ) ) ) 
+			{
+				if( copyIsArray ) 
+				{
+					copyIsArray = false;
+					clone = src && Object.prototype.toString.call(  src  ) === '[object Array]' ? src : [];
 
-                } else {
-                    clone = src && typeof src == 'object' ? src : {};
-                }
-                // Never move original objects, clone them
-                target[name] = extend(clone, copy);
+				} 
+				else 
+				{
+					clone = src && typeof src == 'object' ? src : {};
+				}
+				// Never move original objects, clone them
+				target[name] = extend( clone, copy );
 
-                // Don't bring in undefined values
-            } else if (copy !== undefined) {
-                target[name] = copy;
-            }
-        }
-    }
-    return target;
+				// Don't bring in undefined values
+			} 
+			else if( copy !== undefined ) 
+			{
+				target[name] = copy;
+			}
+		}
+	}
+	return target;
 }
+
 var GameController = {
 	
 	// Default options
@@ -72,34 +87,38 @@ var GameController = {
 			dpad: {
 				up: {
 					width: '7%',
-					height: '15%'
+					height: '15%',
+					stroke: 2
 				},
 				left: {
 					width: '15%',
-					height: '7%'
+					height: '7%',
+					stroke: 2
 				},
 				down: {
 					width: '7%',
-					height: '15%'
+					height: '15%',
+					stroke: 2
 				},
 				right: {
 					width: '15%',
-					height: '7%'
+					height: '7%',
+					stroke: 2
 				}
 			}
 		},
 		right: { 
 			type: 'buttons', 
-			position: { right: '15%', bottom: '22%' }, 
+			position: { right: '17%', bottom: '28%' }, 
 			buttons: [
-				{ offset: { x: '-13%', y: 0 }, label: 'X', radius: '7%', backgroundColor: 'blue', touchStart: function() {
+				{ offset: { x: '-13%', y: 0 }, label: 'X', radius: '7%', stroke: 2, backgroundColor: 'blue', touchStart: function() {
 					GameController.simulateKeyEvent( 'press', 38 );
 					GameController.simulateKeyEvent( 'down', 38 );
 				}, touchEnd: function() {
 					GameController.simulateKeyEvent( 'up', 38 );	
 				} },
-				{ offset: { x: 0, y: '-11%' }, label: 'Y', radius: '7%', backgroundColor: 'yellow' },
-				{ offset: { x: '13%', y: 0 }, label: 'B', radius: '7%', backgroundColor: 'red', touchStart: function() {
+				{ offset: { x: 0, y: '-11%' }, label: 'Y', radius: '7%', stroke: 2, backgroundColor: 'yellow' },
+				{ offset: { x: '13%', y: 0 }, label: 'B', radius: '7%', stroke: 2, backgroundColor: 'red', touchStart: function() {
 					console.log( "SPACE" );
 					// TODO: make this not super ubi land exclusive
 					GameController.simulateKeyEvent( 'press', 32 );
@@ -111,7 +130,7 @@ var GameController = {
 					GameController.simulateKeyEvent( 'up', 32 );						
 					GameController.simulateKeyEvent( 'up', 40 );
 				} },
-				{ offset: { x: 0, y: '11%' }, label: 'A', radius: '7%', backgroundColor: 'green', touchStart: function() {
+				{ offset: { x: 0, y: '11%' }, label: 'A', radius: '7%', stroke: 2, backgroundColor: 'green', touchStart: function() {
 					GameController.simulateKeyEvent( 'press', 38 );
 					GameController.simulateKeyEvent( 'down', 38 );
 				}, touchEnd: function() {
@@ -236,6 +255,8 @@ var GameController = {
 		{
 			// Remove all current buttons
 			this.touchableAreas = [];
+			// Clear out the cached sprites
+			this.cachedSprites = [];
 			// Reload in the initial UI elements
 			this.reloadSide( 'left' );
 			this.reloadSide( 'right' );
@@ -268,8 +289,10 @@ var GameController = {
 	 * @param {char} character
 	 */
 	simulateKeyEvent: function( eventName, keyCode ) {
+		if( typeof window.onkeydown === 'undefined' ) // No keyboard, can't simulate...
+			return false;
+			
 		var oEvent = document.createEvent( 'KeyboardEvent' );
-
 		// Chromium Hack
 		Object.defineProperty( oEvent, 'keyCode', {
 			get : function() {
@@ -299,7 +322,6 @@ var GameController = {
 	setTouchEvents: function() {
 		var _this = this;
 		var touchStart = function( e ) {
-			console.log( e );
 			if( _this.paused )
 			{			
 				_this.paused = false;
@@ -335,10 +357,10 @@ var GameController = {
 			
 			if( !e.touches || e.touches.length == 0 )
 			{
-				console.log( 'pausing' );
 				// Draw once more to remove the touch area
 				_this.render();
-				_this.paused = true;
+				// TODO!!!!!!! Be able to enable pause again without the wonky effects
+				//_this.paused = true;
 			}
 		};
 		this.canvas.addEventListener( 'touchend', touchEnd );
@@ -366,7 +388,7 @@ var GameController = {
 		
 		var direction = new TouchableDirection( options );
 		
-		this.touchableAreas.push( direction );
+		direction.id = this.touchableAreas.push( direction );
 	},
 	
 	/**
@@ -390,7 +412,7 @@ var GameController = {
 		
 		var button = new TouchableButton( options );
 		
-		this.touchableAreas.push( button );
+		button.id = this.touchableAreas.push( button );
 	},
 	
 	addTouchableArea: function( check, callback ) {
@@ -398,34 +420,21 @@ var GameController = {
 	
 	loadButtons: function( side ) {
 		var buttons = this.options[ side ].buttons;
-		console.log( buttons );
 		var _this = this;
 		for( var i = 0, j = buttons.length; i < j; i++ )
 		{
-			console.log( "ADDB" );
 			var posX = this.getPositionX( side );
 			var posY = this.getPositionY( side );
 						
 			buttons[i].x = posX + this.getPixels( buttons[i].offset.x, 'y' );
 			buttons[i].y = posY + this.getPixels( buttons[i].offset.y, 'y' );
-			// DEFAULTS (TODO)
-			/*buttons[i].touchStart = function() { // touchstart
-				_this.simulateKeyEvent( 'press', 38 );
-				_this.simulateKeyEvent( 'down', 38 );
-			};
-			buttons[i].touchEnd = function() { // touchend
-				_this.simulateKeyEvent( 'up', 38 );
-			};
-			*/
+
 			this.addButton( buttons[i] );
 		}
 	},
 	
 	loadDPad: function( side ) {
 		var dpad = this.options[ side ].dpad || {};
-		
-		// TODO: let this be an option
-		this.ctx.fillStyle = '#000000';
 		
 		// Centered value is at this.options[ side ].position
 		
@@ -441,7 +450,7 @@ var GameController = {
 			var options = {
 				x: posX,
 				y: posY,
-				radius: dpad.right.height // TODO: scale
+				radius: dpad.right.height
 			}
 			var center = new TouchableCircle( options ); 
 			this.touchableAreas.push( center );
@@ -606,24 +615,36 @@ var GameController = {
 			return;
 			
 		this.ctx.clearRect( 0, 0, this.canvas.width, this.canvas.height );
+	
+		var cacheId = 'touch-circle';
+		var cached = GameController.cachedSprites[ cacheId ];
+		if( ! cached )
+		{
+			var subCanvas = document.createElement( 'canvas' );
+			var ctx = subCanvas.getContext( '2d' );
+			subCanvas.width = 2 * this.options.touchRadius;
+			subCanvas.height = 2 * this.options.touchRadius;
+
+			var center = this.options.touchRadius;
+			var gradient = ctx.createRadialGradient( center, center, 1, center, center, this.options.touchRadius ); // 10 = end radius
+			gradient.addColorStop( 0, 'rgba( 200, 200, 200, 1 )' );
+			gradient.addColorStop( 1, 'rgba( 200, 200, 200, 0 )' );
+			ctx.beginPath();
+			ctx.fillStyle = gradient;
+			ctx.arc( center, center, this.options.touchRadius, 0 , 2 * Math.PI, false );
+			ctx.fill();
 		
+			cached = GameController.cachedSprites[ cacheId ] = subCanvas;
+		}
 		
 		// Draw the current touch positions if any
 		for( var i = 0, j = this.touches.length; i < j; i++ )
 		{
 			var touch = this.touches[ i ];
 			var x = this.normalizeTouchPositionX( touch.clientX ), y = this.normalizeTouchPositionY( touch.clientY );
-
-			var gradient = this.ctx.createRadialGradient( x, y, 1, x, y, this.options.touchRadius ); // 10 = end radius
-			gradient.addColorStop( 0, 'rgba( 200, 200, 200, 1 )' );
-			gradient.addColorStop( 1, 'rgba( 200, 200, 200, 0 )' );
-			this.ctx.beginPath();
-			this.ctx.fillStyle = gradient;
-			this.ctx.arc( x, y, this.options.touchRadius, 0 , 2 * Math.PI, false );
-			this.ctx.fill();
+			this.ctx.drawImage( cached, x - this.options.touchRadius, y - this.options.touchRadius );
 		}
 		
-		var touchMap = {};
 		for( var i = 0, j = this.touchableAreas.length; i < j; i++ )
 		{	
 			this.touchableAreas[ i ].draw();
@@ -631,7 +652,6 @@ var GameController = {
 				
 			// Go through all touches to see if any hit this area
 			var touched = false;
-			var minDistance = 9999, distance; // find the closest touchable
 			for( var k = 0, l = this.touches.length; k < l; k++ )
 			{
 				var touch = this.touches[ k ];
@@ -639,25 +659,24 @@ var GameController = {
 				var x = this.normalizeTouchPositionX( touch.clientX ), y = this.normalizeTouchPositionY( touch.clientY );
 												
 				// Check that it's in the bounding box/circle
-				if( ( distance = area.check( x, y ) ) !== false )
+				if( ( area.check( x, y ) ) !== false )
 				{
-					touchMap[ k ] = area;
-				}
-				else if( area.active )
-				{
-					console.log( "END" );
-					console.log( area );
-					area.touchEndWrapper( touched );
+					if( !touched )
+						touched = this.touches[ k ];
 				}
 			}
-			for( var k in touchMap )
+			if( touched )
 			{
-				var area = touchMap[ k ];
 				if( !area.active )
-					area.touchStartWrapper( this.touches[ k ] );
-				area.touchMoveWrapper( this.touches[ k ] );
+					area.touchStartWrapper( touched );
+				area.touchMoveWrapper( touched );
 			}
-			
+			else if( area.active )
+			{
+				console.log( "END" );
+				console.log( area );
+				area.touchEndWrapper( touched );
+			}
 			
 			// Start back up the draw function
 			this.paused = false;
@@ -775,81 +794,75 @@ var TouchableDirection = ( function( __super ) {
 		
 		this.draw();
 	}
+
+	TouchableDirection.prototype.type = 'direction';
 	
 	/**
 	 * Checks if the touch is within the bounds of this direction 
 	 */
 	TouchableDirection.prototype.check = function( touchX, touchY ) {
-		var distanceX = 999, distanceY = 999;
-		if( ( passX = ( Math.abs( touchX - this.x ) ) ) < ( GameController.options.touchRadius / 2 ) || ( touchX > this.x ) )
-		{
-			distanceX = passX;
-		}
-		else
-			return false;
-		
-		if( ( passX = ( Math.abs( touchX - ( this.x + this.width ) ) ) ) < ( GameController.options.touchRadius / 2 ) || ( touchX < this.x + this.width ) )
-		{
-			if( passX < distanceX )
-				distanceX = passX;
-		}
-		else
-			return false;
-		
-		if( ( passY = ( Math.abs( touchY - this.y ) ) )< ( GameController.options.touchRadius / 2 ) || ( touchY > this.y ) )
-		{
-			distanceY = passY;
-		}
-		else
-			return false
-		
-		if( ( passY = ( Math.abs( touchY - ( this.y + this.height ) ) ) ) < ( GameController.options.touchRadius / 2 ) || ( touchY < this.y + this.height ) )
-		{
-			if( passY < distanceY )
-				distanceY = passY;
-		}
-		else
-			return false;
+		var distanceX, distanceY;
+		if( ( Math.abs( touchX - this.x ) < ( GameController.options.touchRadius / 2 ) || ( touchX > this.x ) ) && // left
+			( Math.abs( touchX - ( this.x + this.width ) ) < ( GameController.options.touchRadius / 2 ) || ( touchX < this.x + this.width ) ) && // right
+			( Math.abs( touchY - this.y ) < ( GameController.options.touchRadius / 2 ) || ( touchY > this.y ) ) && // top
+			( Math.abs( touchY - ( this.y + this.height ) ) < ( GameController.options.touchRadius / 2 ) || ( touchY < this.y + this.height ) ) // bottom
+		)
+			return true;
 			
-		// Passed all checks, let's return how close they are...
-		return distanceX * distanceX + distanceY * distanceY;
+		return false;
 	};
 	
 	TouchableDirection.prototype.draw = function() {
-		var opacity = this.opacity || 0.9;
-		
-		if( ! this.active ) // Direction currently being touched
-			opacity *= 0.5;
-			
-		switch( this.direction )
+		var cacheId = this.type + '' + this.id + '' + this.active;
+		var cached = GameController.cachedSprites[ cacheId ];
+		if( ! cached )
 		{
-			case 'up':
-				var gradient = GameController.ctx.createLinearGradient( this.x, this.y, this.x , this.y + this.height );
-				gradient.addColorStop( 0, 'rgba( 0, 0, 0, ' + ( opacity * 0.5 ) + ' )' );
-				gradient.addColorStop( 1, 'rgba( 0, 0, 0, ' + opacity + ' )' );   
-				break;
-			case 'left':
-				var gradient = GameController.ctx.createLinearGradient( this.x, this.y, this.x + this.width, this.y );
-				gradient.addColorStop( 0, 'rgba( 0, 0, 0, ' + ( opacity * 0.5 ) + ' )' );
-				gradient.addColorStop( 1, 'rgba( 0, 0, 0, ' + opacity + ' )' );   
-				break;
-			case 'right':
-				var gradient = GameController.ctx.createLinearGradient( this.x, this.y, this.x + this.width, this.y );
-				gradient.addColorStop( 0, 'rgba( 0, 0, 0, ' + opacity + ' )' );
-				gradient.addColorStop( 1, 'rgba( 0, 0, 0, ' + ( opacity * 0.5 ) + ' )' );  
-				break;
-			case 'down':
-			default:
-				var gradient = GameController.ctx.createLinearGradient( this.x, this.y, this.x, this.y + this.height );
-				gradient.addColorStop( 0, 'rgba( 0, 0, 0, ' + opacity + ' )' );
-				gradient.addColorStop( 1, 'rgba( 0, 0, 0, ' + ( opacity * 0.5 ) + ' )' );   
-		}
-		GameController.ctx.fillStyle = gradient;
+			var subCanvas = document.createElement( 'canvas' );
+			var ctx = subCanvas.getContext( '2d' );
+			subCanvas.width = this.width + 2 * this.stroke;
+			subCanvas.height = this.height + 2 * this.stroke;
 
-		GameController.ctx.fillRect( this.x, this.y, this.width, this.height );
-		GameController.lineWidth = 4;
-		GameController.ctx.strokeStyle = 'rgba( 255, 255, 255, 0.1 )';
-		GameController.ctx.strokeRect( this.x, this.y, this.width, this.height );
+			var opacity = this.opacity || 0.9;
+			
+			if( ! this.active ) // Direction currently being touched
+				opacity *= 0.5;
+				
+			switch( this.direction )
+			{
+				case 'up':
+					var gradient = ctx.createLinearGradient( 0, 0, 0, this.height );
+					gradient.addColorStop( 0, 'rgba( 0, 0, 0, ' + ( opacity * 0.5 ) + ' )' );
+					gradient.addColorStop( 1, 'rgba( 0, 0, 0, ' + opacity + ' )' );   
+					break;
+				case 'left':
+					var gradient = ctx.createLinearGradient( 0, 0, this.width, 0 );
+					gradient.addColorStop( 0, 'rgba( 0, 0, 0, ' + ( opacity * 0.5 ) + ' )' );
+					gradient.addColorStop( 1, 'rgba( 0, 0, 0, ' + opacity + ' )' );   
+					break;
+				case 'right':
+					var gradient = ctx.createLinearGradient( 0, 0, this.width, 0 );
+					gradient.addColorStop( 0, 'rgba( 0, 0, 0, ' + opacity + ' )' );
+					gradient.addColorStop( 1, 'rgba( 0, 0, 0, ' + ( opacity * 0.5 ) + ' )' );  
+					break;
+				case 'down':
+				default:
+					var gradient = ctx.createLinearGradient( 0, 0, 0, this.height );
+					gradient.addColorStop( 0, 'rgba( 0, 0, 0, ' + opacity + ' )' );
+					gradient.addColorStop( 1, 'rgba( 0, 0, 0, ' + ( opacity * 0.5 ) + ' )' );   
+			}
+			ctx.fillStyle = gradient;
+	
+			ctx.fillRect( 0, 0, this.width, this.height );
+			ctx.lineWidth = this.stroke;
+			ctx.strokeStyle = 'rgba( 255, 255, 255, 0.1 )';
+			ctx.strokeRect( 0, 0, this.width, this.height );
+			
+			cached = GameController.cachedSprites[ cacheId ] = subCanvas;
+		}
+		
+		GameController.ctx.drawImage( cached, this.x, this.y );
+			
+
 	};
 	
 	return TouchableDirection;
@@ -873,6 +886,8 @@ var TouchableButton = ( function( __super ) {
 		this.draw();
 	}
 	
+	TouchableButton.prototype.type = 'button';
+	
 	/**
 	 * Checks if the touch is within the bounds of this direction 
 	 */
@@ -887,68 +902,83 @@ var TouchableButton = ( function( __super ) {
 	};
 	
 	TouchableButton.prototype.draw = function() {
-		// STYLING FOR BUTTONS
-		// TODO: subcanvas
-		var gradient = GameController.ctx.createRadialGradient( this.x, this.y, 1, this.x, this.y, this.radius );
-		var textShadowColor;
-		switch( this.backgroundColor )
+		var cacheId = this.type + '' + this.id + '' + this.active;
+		var cached = GameController.cachedSprites[ cacheId ];
+		if( ! cached )
 		{
-			case 'blue':
-				gradient.addColorStop( 0, 'rgba(123, 181, 197, 0.6)' );
-				gradient.addColorStop( 1, '#105a78' );
-				textShadowColor = '#0A4861';
-				break;
-			case 'green':
-				gradient.addColorStop( 0, 'rgba(29, 201, 36, 0.6)' );
-				gradient.addColorStop( 1, '#107814' );
-				textShadowColor = '#085C0B';
-				break;
-			case 'red':
-				gradient.addColorStop( 0, 'rgba(165, 34, 34, 0.6)' );
-				gradient.addColorStop( 1, '#520101' );
-				textShadowColor = '#330000';
-				break;
-			case 'yellow': // TODO
-				gradient.addColorStop( 0, 'rgba(219, 217, 59, 0.6)' );
-				gradient.addColorStop( 1, '#E8E10E' );
-				textShadowColor = '#BDB600';
-				break;
-			case 'white':
-			default:
-				gradient.addColorStop( 0, 'rgba( 255,255,255,.3 )' );
-				gradient.addColorStop( 1, '#eee' );
-				break;
-		}
+			var subCanvas = document.createElement( 'canvas' );
+			var ctx = subCanvas.getContext( '2d' );
+			ctx.lineWidth = this.stroke;
+			subCanvas.width = subCanvas.height = 2 * ( this.radius + ctx.lineWidth );
 			
-		if( this.active )			
-			GameController.ctx.fillStyle = textShadowColor;
-		else	
-			GameController.ctx.fillStyle = gradient;
-		GameController.ctx.lineWidth = 2;
-		GameController.ctx.strokeStyle = textShadowColor;			
+			
+			var gradient = ctx.createRadialGradient( this.radius, this.radius, 1, this.radius, this.radius, this.radius );
+			var textShadowColor;
+			switch( this.backgroundColor )
+			{
+				case 'blue':
+					gradient.addColorStop( 0, 'rgba(123, 181, 197, 0.6)' );
+					gradient.addColorStop( 1, '#105a78' );
+					textShadowColor = '#0A4861';
+					break;
+				case 'green':
+					gradient.addColorStop( 0, 'rgba(29, 201, 36, 0.6)' );
+					gradient.addColorStop( 1, '#107814' );
+					textShadowColor = '#085C0B';
+					break;
+				case 'red':
+					gradient.addColorStop( 0, 'rgba(165, 34, 34, 0.6)' );
+					gradient.addColorStop( 1, '#520101' );
+					textShadowColor = '#330000';
+					break;
+				case 'yellow':
+					gradient.addColorStop( 0, 'rgba(219, 217, 59, 0.6)' );
+					gradient.addColorStop( 1, '#E8E10E' );
+					textShadowColor = '#BDB600';
+					break;
+				case 'white':
+				default:
+					gradient.addColorStop( 0, 'rgba( 255,255,255,.3 )' );
+					gradient.addColorStop( 1, '#eee' );
+					break;
+			}
+				
+			if( this.active )			
+				ctx.fillStyle = textShadowColor;
+			else	
+				ctx.fillStyle = gradient;
 
-		GameController.ctx.beginPath();
-		GameController.ctx.arc( this.x, this.y, this.radius, 0 , 2 * Math.PI, false );
-		GameController.ctx.fill();
-		GameController.ctx.stroke();
-		
-		
-		if( this.label )
-		{
-			// Text Shadow
-			GameController.ctx.fillStyle = textShadowColor;
-			GameController.ctx.font = 'bold 24px Verdana'; // TODO: scale
-			GameController.ctx.textAlign = 'center';
-			GameController.ctx.textBaseline = 'middle';
-			GameController.ctx.fillText( this.label, this.x + 2, this.y + 2 );
-
-
-			GameController.ctx.fillStyle = '#fff'; // TODO option?
-			GameController.ctx.font = 'bold 24px Verdana'; // TODO: scale
-			GameController.ctx.textAlign = 'center';
-			GameController.ctx.textBaseline = 'middle';
-			GameController.ctx.fillText( this.label, this.x, this.y );
+			ctx.strokeStyle = textShadowColor;			
+	
+			ctx.beginPath();
+			//ctx.arc( this.x, this.y, this.radius, 0 , 2 * Math.PI, false );
+			ctx.arc( subCanvas.width / 2, subCanvas.width / 2, this.radius, 0 , 2 * Math.PI, false );
+			ctx.fill();
+			ctx.stroke();
+			
+			if( this.label )
+			{
+				// Text Shadow
+				ctx.fillStyle = textShadowColor;
+				ctx.font = 'bold 24px Verdana'; // TODO: scale
+				ctx.textAlign = 'center';
+				ctx.textBaseline = 'middle';
+				ctx.fillText( this.label, subCanvas.height / 2 + 2, subCanvas.height / 2 + 2 );
+	
+	
+				ctx.fillStyle = '#fff'; // TODO option?
+				ctx.font = 'bold 24px Verdana'; // TODO: scale
+				ctx.textAlign = 'center';
+				ctx.textBaseline = 'middle';
+				ctx.fillText( this.label, subCanvas.height / 2, subCanvas.height / 2 );
+			}
+			
+			cached = GameController.cachedSprites[ cacheId ] = subCanvas;
 		}
+		
+		GameController.ctx.drawImage( cached, this.x, this.y );
+		
+		
 	};
 	
 	return TouchableButton;
@@ -1038,7 +1068,6 @@ var TouchableJoystick = ( function( __super ) {
 			else
 			{
 				// STYLING FOR BUTTONS
-				// TODO: subcanvas
 				var gradient = ctx.createRadialGradient( this.x, this.y, 1, this.x, this.y, this.radius );
 				gradient.addColorStop( 0, 'rgba( 200,200,200,.2 )' );
 				gradient.addColorStop( 1, 'rgba( 200,200,200,.4 )' );
@@ -1096,7 +1125,6 @@ var TouchableCircle = ( function( __super ) {
 	TouchableCircle.prototype.draw = function() {
 
 		// STYLING FOR BUTTONS
-		// TODO: subcanvas
 		GameController.ctx.fillStyle = 'rgba( 0, 0, 0, 0.5 )';
 		
 		// Actual joystick part that is being moved
