@@ -31,6 +31,8 @@ Easy Setup
 </script>
 ```
 
+If you are using node.js and something like [browserify](http://browserify.org/), you can install with `npm install game-controller`
+
 Advanced Options
 ----------------
 The entire customization for this library is done through the options object that is passed as a parameter to the `init` method.
