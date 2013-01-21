@@ -1,0 +1,9 @@
+{
+  "name": "game-controller",
+  "main": "gamecontroller.js",
+  "version": "0.0.1",
+  "repository": {
+    "type":"git",
+    "url": "git@github.com:austinhallock/html5-virtual-game-controller.git"
+  }
+}
