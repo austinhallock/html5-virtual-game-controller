@@ -138,29 +138,28 @@
 				buttons: [
 					{ offset: { x: '-13%', y: 0 }, label: 'X', radius: '7%', stroke: 2, backgroundColor: 'blue', fontColor: '#fff', touchStart: function() {
 						// Blue is currently mapped to up button
-						GameController.simulateKeyEvent( 'press', 38 );
-						GameController.simulateKeyEvent( 'down', 38 );
+						GameController.simulateKeyEvent( 'press', 88 ); // x key
+						GameController.simulateKeyEvent( 'down', 88 );
 					}, touchEnd: function() {
-						GameController.simulateKeyEvent( 'up', 38 );	
+						GameController.simulateKeyEvent( 'up', 88 );	
 					} },
-					{ offset: { x: 0, y: '-11%' }, label: 'Y', radius: '7%', stroke: 2, backgroundColor: 'yellow', fontColor: '#fff' },
-					{ offset: { x: '13%', y: 0 }, label: 'B', radius: '7%', stroke: 2, backgroundColor: 'red', fontColor: '#fff', touchStart: function() {
-						// Red is currently mapped to down button, and space button
-						GameController.simulateKeyEvent( 'press', 32 );
-						GameController.simulateKeyEvent( 'down', 32 );
-	
-						GameController.simulateKeyEvent( 'press', 40 );
-						GameController.simulateKeyEvent( 'down', 40 );
+					{ offset: { x: 0, y: '-11%' }, label: 'Y', radius: '7%', stroke: 2, backgroundColor: 'yellow', fontColor: '#fff', touchStart: function() {
+						GameController.simulateKeyEvent( 'press', 70 ); // f key
+						GameController.simulateKeyEvent( 'down', 70 );
 					}, touchEnd: function() {
-						GameController.simulateKeyEvent( 'up', 32 );						
-						GameController.simulateKeyEvent( 'up', 40 );
+						GameController.simulateKeyEvent( 'up', 70 );						
+					}  },
+					{ offset: { x: '13%', y: 0 }, label: 'B', radius: '7%', stroke: 2, backgroundColor: 'red', fontColor: '#fff', touchStart: function() {
+						GameController.simulateKeyEvent( 'press', 90 ); // z key
+						GameController.simulateKeyEvent( 'down', 90 );
+					}, touchEnd: function() {
+						GameController.simulateKeyEvent( 'up', 90 );						
 					} },
 					{ offset: { x: 0, y: '11%' }, label: 'A', radius: '7%', stroke: 2, backgroundColor: 'green', fontColor: '#fff', touchStart: function() {
-						// Green is currently mapped to up button
-						GameController.simulateKeyEvent( 'press', 38 );
-						GameController.simulateKeyEvent( 'down', 38 );
+						GameController.simulateKeyEvent( 'press', 67 ); // a key
+						GameController.simulateKeyEvent( 'down', 67 );
 					}, touchEnd: function() {
-						GameController.simulateKeyEvent( 'up', 38 );	
+						GameController.simulateKeyEvent( 'up', 67 );	
 					}  }
 				],
 				dpad: {
