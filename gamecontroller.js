@@ -281,6 +281,7 @@
 			}
 			
 			this.canvas.style.position = 'absolute';
+			this.canvas.style.zIndex = '5';
 			this.canvas.style.left = this.options.canvas.offsetLeft + 'px';
 			this.canvas.style.top = this.options.canvas.offsetTop + 'px';
 			this.canvas.setAttribute( 'style', this.canvas.getAttribute( 'style' ) +' -ms-touch-action: none;' );
@@ -327,7 +328,7 @@
 				return false;
 				
 			/* If they have jQuery, use it because it works better for mobile safari */
-			if( jQuery )
+			if( typeof jQuery !== 'undefined' )
 			{
 				var press = jQuery.Event( 'key' + eventName );
 				press.ctrlKey = false;
@@ -339,7 +340,7 @@
 			var oEvent = document.createEvent( 'KeyboardEvent' );
 			
 			// Chromium Hack
-			if( navigator.userAgent.toLowerCase().indexOf('chrome') !== -1 )
+			if( navigator.userAgent.toLowerCase().indexOf( 'chrome' ) !== -1 )
 			{
 				Object.defineProperty( oEvent, 'keyCode', {
 					get : function() {
@@ -474,6 +475,9 @@
 			var _this = this;
 			for( var i = 0, j = buttons.length; i < j; i++ )
 			{
+				if( typeof buttons[i] === 'undefined' || typeof buttons[i].offset === 'undefined' )
+					continue;
+					
 				var posX = this.getPositionX( side );
 				var posY = this.getPositionY( side );
 							
