@@ -46,6 +46,7 @@ GameController.init( options );
 Below is a list of the possible options, and what each does.
 
 * **touchRadius** {int} - a faint glow for feedback will show when the screen is touched. Set this as the length of the radius of that glow circle in pixels. Set to false if you don't want this help to show
+* **forcePerformanceFriendly** {boolean} - the library auto-detects slower devices (phones) and changes a few things to make it not use as much CPU. You can force it to always use the performance-friendly mode by setting this to `true`
 * **left** {object} - options for the element you want on the left side of the game
   * **type** {string} - 'dpad', 'buttons', or 'joystick' depending on the mode you want. *Default: 'dpad'*
   * **position** {object} - positioning for this part of the controller

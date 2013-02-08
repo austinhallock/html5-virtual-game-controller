@@ -196,9 +196,22 @@
 		
 		// Areas (objects) on the screen that can be touched
 		touchableAreas: [],
+		touchableAreasCount: 0,
 		
 		// Multi-touch
 		touches: [],
+		
+		// Canvas offset on page (for coverting touch coordinates)
+		offsetX: 0,
+		offsetY: 0,
+		
+		// Bounding box - used for clearRect - first we determine which areas of the canvas are actually drawn to
+		bound: {
+			left: false,
+			right: false,
+			top: false,
+			bottom: false
+		},
 		
 		// Heavy sprites (with gradients) are cached as a canvas to improve performance
 		cachedSprites: {},
@@ -216,6 +229,10 @@
 			options = options || {};
 			extend( this.options, options );	
 			
+			var userAgent = navigator.userAgent.toLowerCase();
+			// See if we should run the performanceFriendly version (for slower CPUs)
+			this.performanceFriendly = ( userAgent.indexOf( 'iphone' ) !== -1 || userAgent.indexOf( 'android' ) !== -1 || this.options.forcePerformanceFriendly );
+			
 			// Grab the canvas if one wasn't passed
 			var ele;
 			if( !this.options.canvas || !( ele = document.getElementById( this.options.canvas ) ) )
@@ -231,6 +248,32 @@
 			
 			// Create a canvas that goes directly on top of the game canvas
 			this.createOverlayCanvas();
+		},
+		
+		/**
+		 * Finds the actual 4 corners of canvas that are being used (so we don't have to clear the entire canvas each render) 
+		 * Called when each new touchableArea is added in
+		 * @param {object} options - x, y, width, height
+		 */
+		boundingSet: function( options ) {
+			var directions = ['left', 'right'];
+			
+			var width = options.width || ( ( this.getPixels( options.radius ) + this.getPixels( options.stroke ) ) * 2 );
+			var height = options.height || ( ( this.getPixels( options.radius ) + this.getPixels( options.stroke ) ) * 2 );
+			
+			var left = this.getPixels( options.x );
+			var right = this.getPixels( options.x ) + this.getPixels( width );
+			var top = this.getPixels( options.y );
+			var bottom = this.getPixels( options.y + height );
+			
+			if( this.bound.left === false || left < this.bound.left )
+				this.bound.left = left;
+			if( this.bound.right === false || right > this.bound.right )
+				this.bound.right = right;
+			if( this.bound.top === false || top < this.bound.top )
+				this.bound.top = top;
+			if( this.bound.bottom === false || bottom > this.bound.bottom )
+				this.bound.bottom = bottom;
 		},
 		
 		/**
@@ -271,6 +314,9 @@
 			// Scale to same size as original canvas
 			this.canvas.width = this.options.canvas.width;
 			this.canvas.height = this.options.canvas.height;
+			
+			this.offsetX = GameController.options.canvas.offsetLeft + document.body.scrollLeft;
+			this.offsetY = GameController.options.canvas.offsetTop + document.body.scrollTop;
 			
 			// Get in on this retina action
 			if( this.options.canvas.style.width && this.options.canvas.style.height && this.options.canvas.style.height.indexOf( 'px' ) !== -1 ) 
@@ -442,6 +488,9 @@
 			var direction = new TouchableDirection( options );
 			
 			direction.id = this.touchableAreas.push( direction );
+			this.touchableAreasCount++;
+			
+			this.boundingSet( options );
 		},
 		
 		/**
@@ -453,7 +502,9 @@
 			var joystick = new TouchableJoystick( options );
 			
 			joystick.id = this.touchableAreas.push( joystick );
+			this.touchableAreasCount++;
 			
+			this.boundingSet( options );
 		},
 		
 		/**
@@ -465,6 +516,9 @@
 			var button = new TouchableButton( options );
 			
 			button.id = this.touchableAreas.push( button );
+			this.touchableAreasCount++;
+			
+			this.boundingSet( options );
 		},
 		
 		addTouchableArea: function( check, callback ) {
@@ -509,6 +563,7 @@
 				}
 				var center = new TouchableCircle( options ); 
 				this.touchableAreas.push( center );
+				this.touchableAreasCount++;
 			}
 	
 			// Up arrow
@@ -586,7 +641,7 @@
 		 */
 		normalizeTouchPositionX: function( x )
 		{
-			return ( x - GameController.options.canvas.offsetLeft + document.body.scrollLeft ) * ( this.pixelRatio );
+			return ( x - this.offsetX ) * ( this.pixelRatio );
 		},
 		
 		/**
@@ -595,7 +650,7 @@
 		 */
 		normalizeTouchPositionY: function( y )
 		{
-			return ( y - GameController.options.canvas.offsetTop + document.body.scrollTop ) * ( this.pixelRatio );
+			return ( y - this.offsetY ) * ( this.pixelRatio );
 		},
 		
 		/**
@@ -636,52 +691,19 @@
 			else
 				return this.getYFromBottom( this.getPixels( this.options[ side ].position.bottom, 'y' ) );
 		},
-		
-		render: function() {
-	
-			this.ctx.clearRect( 0, 0, this.canvas.width, this.canvas.height );
-				
-			// When no touch events are happening, this enables 'paused' mode, which only skips this small part.
-			// Skipping the clearRect and draw()s would be nice, but it messes with the transparent gradients
-			if( ! this.paused )
+
+		/**
+		 * Processes the info for each touchableArea 
+		 */
+		renderAreas: function() {
+			for( var i = 0, j = this.touchableAreasCount; i < j; i++ )
 			{
-				var cacheId = 'touch-circle';
-				var cached = GameController.cachedSprites[ cacheId ];
-				if( ! cached && this.options.touchRadius )
-				{
-					var subCanvas = document.createElement( 'canvas' );
-					var ctx = subCanvas.getContext( '2d' );
-					subCanvas.width = 2 * this.options.touchRadius;
-					subCanvas.height = 2 * this.options.touchRadius;
-		
-					var center = this.options.touchRadius;
-					var gradient = ctx.createRadialGradient( center, center, 1, center, center, this.options.touchRadius ); // 10 = end radius
-					gradient.addColorStop( 0, 'rgba( 200, 200, 200, 1 )' );
-					gradient.addColorStop( 1, 'rgba( 200, 200, 200, 0 )' );
-					ctx.beginPath();
-					ctx.fillStyle = gradient;
-					ctx.arc( center, center, this.options.touchRadius, 0 , 2 * Math.PI, false );
-					ctx.fill();
+				var area = this.touchableAreas[ i ];				
 				
-					cached = GameController.cachedSprites[ cacheId ] = subCanvas;
-				}
-				
-				// Draw the current touch positions if any
-				for( var i = 0, j = this.touches.length; i < j; i++ )
-				{
-					var touch = this.touches[ i ];
-					if( typeof touch === 'undefined' )
-						continue;
-					var x = this.normalizeTouchPositionX( touch.clientX ), y = this.normalizeTouchPositionY( touch.clientY );
-					this.ctx.drawImage( cached, x - this.options.touchRadius, y - this.options.touchRadius );
-				}
-			}
-			
-			for( var i = 0, j = this.touchableAreas.length; i < j; i++ )
-			{	
-				this.touchableAreas[ i ].draw();
-				
-				var area = this.touchableAreas[ i ];
+				if( typeof area === 'undefined' )
+					continue;
+
+				area.draw();
 					
 				// Go through all touches to see if any hit this area
 				var touched = false;
@@ -700,6 +722,7 @@
 							touched = this.touches[ k ];
 					}
 				}
+
 				if( touched )
 				{
 					if( !area.active )
@@ -711,7 +734,58 @@
 					area.touchEndWrapper( touched );
 				}
 			}
+		},
+		
+		render: function() {
+			if( ! this.paused || ! this.performanceFriendly )
+				this.ctx.clearRect( this.bound.left, this.bound.top, this.bound.right - this.bound.left, this.bound.bottom - this.bound.top );
+	
+			// Draw feedback for when screen is being touched
+			// When no touch events are happening, this enables 'paused' mode, which skips running this
+			// This isn't run at all in performanceFriendly mode
+			if( ! this.paused && ! this.performanceFriendly )
+			{
+				var cacheId = 'touch-circle';
+				var cached = this.cachedSprites[ cacheId ];
+				
+				if( ! cached && this.options.touchRadius )
+				{
+					var subCanvas = document.createElement( 'canvas' );
+					var ctx = subCanvas.getContext( '2d' );
+					subCanvas.width = 2 * this.options.touchRadius;
+					subCanvas.height = 2 * this.options.touchRadius;
+		
+					var center = this.options.touchRadius;
+					var gradient = ctx.createRadialGradient( center, center, 1, center, center, this.options.touchRadius ); // 10 = end radius
+					gradient.addColorStop( 0, 'rgba( 200, 200, 200, 1 )' );
+					gradient.addColorStop( 1, 'rgba( 200, 200, 200, 0 )' );
+					ctx.beginPath();
+					ctx.fillStyle = gradient;
+					ctx.arc( center, center, this.options.touchRadius, 0 , 2 * Math.PI, false );
+					ctx.fill();
+				
+					cached = GameController.cachedSprites[ cacheId ] = subCanvas;
+				}
+				// Draw the current touch positions if any
+				for( var i = 0, j = this.touches.length; i < j; i++ )
+				{
+					var touch = this.touches[ i ];
+					if( typeof touch === 'undefined' )
+						continue;
+					var x = this.normalizeTouchPositionX( touch.clientX ), y = this.normalizeTouchPositionY( touch.clientY );
+					if( x - this.options.touchRadius > this.bound.left && x + this.options.touchRadius < this.bound.right &&  
+						y - this.options.touchRadius > this.bound.top && y + this.options.touchRadius < this.bound.bottom )
+					this.ctx.drawImage( cached, x - this.options.touchRadius, y - this.options.touchRadius );
+				}
+			}
 			
+			// Render if the game isn't paused, or we're not in performanceFriendly mode (running when not paused keeps the semi-transparent gradients looking better for some reason)
+			if( ! this.paused || ! this.performanceFriendly )
+			{
+				// Process all the info for each touchable area
+				this.renderAreas();
+			}
+
 			window.requestAnimationFrame( this.renderWrapper );
 		},
 		/**
@@ -719,8 +793,7 @@
 		 */
 		renderWrapper: function() {
 			GameController.render();
-		}
-		
+		},	
 	}
 	
 	/**
@@ -786,7 +859,7 @@
 				this.lastPosX = e.clientX;
 				this.lastPosY = e.clientY;
 			}
-			// Mark this direction as inactive
+			// Mark this direction as active
 			this.active = true;
 		};
 		
@@ -1014,7 +1087,7 @@
 				
 				cached = GameController.cachedSprites[ cacheId ] = subCanvas;
 			}
-			
+
 			GameController.ctx.drawImage( cached, this.x, this.y );
 			
 			
