@@ -3,7 +3,7 @@ HTML5 Virtual Game Controller
 
 About
 -----
-Author: [Clay.io](http://clay.io/devlanding) - Tools for HTML5 game developers
+**Author: [Clay.io](http://clay.io/devlanding) - Tools for HTML5 game developers**
 
 This library is for easy integration of a virtual game controller overlay for HTML5 games. With HTML5, it's easy to 
 get your game to run on touch-screen devices like phones and tablets, but user-input is a whole different story. With
