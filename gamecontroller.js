@@ -379,7 +379,9 @@
 				var press = jQuery.Event( 'key' + eventName );
 				press.ctrlKey = false;
 				press.which = keyCode;
-				$( document ).trigger( press );
+				press.keyCode = keyCode;
+				// Keypress on just the canvas instead of the document
+				$( this.options.canvas ).trigger( press );
 				return;
 			}
 	
