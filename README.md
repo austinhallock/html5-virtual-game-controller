@@ -33,6 +33,8 @@ Easy Setup
 
 If you are using node.js and something like [browserify](http://browserify.org/), you can install with `npm install game-controller`
 
+If you are still in the process of choosing an HTML5 Game Engine, see [this list - complete with reviews and details of popular HTML5 Game Engines](http://html5gameengine.com).
+
 Advanced Options
 ----------------
 The entire customization for this library is done through the options object that is passed as a parameter to the `init` method.
