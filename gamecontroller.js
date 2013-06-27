@@ -258,13 +258,27 @@
 		boundingSet: function( options ) {
 			var directions = ['left', 'right'];
 			
-			var width = options.width || ( ( this.getPixels( options.radius ) + this.getPixels( options.stroke ) ) * 2 );
-			var height = options.height || ( ( this.getPixels( options.radius ) + this.getPixels( options.stroke ) ) * 2 );
-			
-			var left = this.getPixels( options.x );
-			var right = this.getPixels( options.x ) + this.getPixels( width );
-			var top = this.getPixels( options.y );
-			var bottom = this.getPixels( options.y + height );
+			// Square - pivot is top left
+			if( options.width )
+			{
+				var width = this.getPixels( options.width );
+				var height = this.getPixels( options.height );
+				var left = this.getPixels( options.x );
+				var top = this.getPixels( options.y );
+			}
+			// Circle - pivot is center
+			else
+			{
+				if( this.options.touchRadius )
+					var radius = this.getPixels( options.radius ) * 2 + ( this.getPixels( this.options.touchRadius ) / 2 ); // size of the box the joystick can go to
+				else
+					var radius = options.radius;
+				var width = height = ( radius + this.getPixels( options.stroke ) ) * 2;
+				var left = this.getPixels( options.x ) - ( width / 2 );
+				var top = this.getPixels( options.y ) - ( height / 2 );
+			}
+			var right = left + width;
+			var bottom = top + height;
 			
 			if( this.bound.left === false || left < this.bound.left )
 				this.bound.left = left;
@@ -1117,8 +1131,8 @@
 		 */
 		TouchableJoystick.prototype.check = function( touchX, touchY ) {
 			if( 
-				( Math.abs( touchX - this.x ) < this.radius + ( GameController.options.touchRadius / 2 ) ) &&
-				( Math.abs( touchY - this.y ) < this.radius + ( GameController.options.touchRadius / 2 ) )
+				( Math.abs( touchX - this.x ) < this.radius + ( GameController.getPixels( GameController.options.touchRadius ) / 2 ) ) &&
+				( Math.abs( touchY - this.y ) < this.radius + ( GameController.getPixels( GameController.options.touchRadius ) / 2 ) )
 			)
 				return true;
 				
@@ -1172,7 +1186,7 @@
 			{
 				var subCanvas = document.createElement( 'canvas' );
 				this.stroke = this.stroke || 2;
-				subCanvas.width = subCanvas.height = 2 * ( this.radius + this.stroke );
+				subCanvas.width = subCanvas.height = 2 * ( this.radius + ( GameController.options.touchRadius ) + this.stroke );
 				
 				var ctx = subCanvas.getContext( '2d' );
 				ctx.lineWidth = this.stroke;
