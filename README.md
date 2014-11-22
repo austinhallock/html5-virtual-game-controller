@@ -5,15 +5,15 @@ About
 -----
 **Author: [Clay.io](http://clay.io/development-tools) - Tools for HTML5 game developers**
 
-This library is for easy integration of a virtual game controller overlay for HTML5 games. With HTML5, it's easy to 
+This library is for easy integration of a virtual game controller overlay for HTML5 games. With HTML5, it's easy to
 get your game to run on touch-screen devices like phones and tablets, but user-input is a whole different story. With
 just the accelerometer and touch to work with, it makes it hard to have a game's input pair well with the desktop version.
 
-The HTML5 Virtual Game Controller aims to alleviate the problem with a super-simple, yet customizable option for adding a 
+The HTML5 Virtual Game Controller aims to alleviate the problem with a super-simple, yet customizable option for adding a
 touch-based gamepad to your game when touch is enabled. The controller will *only* be shown if touch is available on the device.
 
-**Watch a demo video [here](http://www.youtube.com/watch?v=XQKRYMjrp2Q), or [try the game](http://clay.io/plugins/controller/index.html) out** (if you have a touch-capable device). 
-In Chrome, you can enable fake touch events with: ctrl+shift+i, then click the settings icon on the bottom right. 
+**Watch a demo video [here](http://www.youtube.com/watch?v=XQKRYMjrp2Q), or [try the game](http://clay.io/plugins/controller/index.html) out** (if you have a touch-capable device).
+In Chrome, you can enable fake touch events with: ctrl+shift+i, then click the settings icon on the bottom right.
 Select the "Overrides" tab, and check "Emulate touch events" at the bottom). The demo game isn't the most efficient on
 mobile devices in it's current state, but iOS Safari should handle it. The game mentions to press the space key, the "B" button
 has been mapped to that functionality. This was a game that *completely* didn't work with touch prior to this library.
@@ -84,88 +84,98 @@ Below is a list of the possible options, and what each does.
          * **touchMove** {function} - called on any movement while player is touching object
   * **joystick** {object} - options pertaining to the dpad for this section (only has effect if *type* is set to 'dpad'
      * **radius** {int} joystick button radius in pixels
-         * **touchStart** {function} - called when this direction is touched
-         * **touchEnd** {function} - called when this direction is no longer touched
-         * **touchMove** {function} - called on any movement while player is touching object. An object with the following properties is passed as the only parameter:
-             * **dx** {float} - the distance on x axis the joystick is from the center
-             * **dy** {float} - the distance on y axis the joystick is from the center
-             * **max** {int} - the max distance the joystick can get from the center
-             * **normalizedX** {float} - ranges from -1 to 1 where -1 is as far left as possible, and 1 is as far right as possible. 0 is center
-             * **normalizedY** - ranges from -1 to 1 where -1 is as far up as possible, and 1 is as far down as possible. 0 is center
+     * **touchStart** {function} - called when this direction is touched
+     * **touchEnd** {function} - called when this direction is no longer touched
+     * **touchMove** {function} - called on any movement while player is touching object. An object with the following properties is passed as the only parameter:
+         * **dx** {float} - the distance on x axis the joystick is from the center
+         * **dy** {float} - the distance on y axis the joystick is from the center
+         * **max** {int} - the max distance the joystick can get from the center
+         * **normalizedX** {float} - ranges from -1 to 1 where -1 is as far left as possible, and 1 is as far right as possible. 0 is center
+         * **normalizedY** - ranges from -1 to 1 where -1 is as far up as possible, and 1 is as far down as possible. 0 is center
 
 Examples
 --------
-**DPad on left, 2 buttons on right**  
+**DPad on left, 2 buttons on right**
 ```
 GameController.init();
 ```
 ![GamePad 1](http://clay.io/images/controller/1.png)
 
-**Joystick on left, 1 button on right**  
+**Joystick on left, 1 button on right**
 ```
-GameController.init( { 
+GameController.init( {
     left: {
         type: 'joystick'
-    }, 
-    right: { 
-        position: { 
-            right: '5%' 
-        }, 
-        type: 'buttons', 
+    },
+    right: {
+        position: {
+            right: '5%'
+        },
+        type: 'buttons',
         buttons: [
-        { 
-            label: 'jump', fontSize: 13, touchStart: function() { 
-                // do something 
-            } 
-        }, 
+        {
+            label: 'jump', fontSize: 13, touchStart: function() {
+                // do something
+            }
+        },
         false, false, false
-        ] 
+        ]
     }
 } );
 ```
 ![GamePad 2](http://clay.io/images/controller/2.png)
 
-**Joysticks on both sides**  
+**Joysticks on both sides**
 ```
-GameController.init( { 
+GameController.init( {
     left: {
-        type: 'joystick', 
+        type: 'joystick',
         position: { left: '15%', bottom: '15%' },
-        touchMove: function( details ) {
+        joystick: {
+          touchStart: function() {
+            console.log('touch starts');
+          },
+          touchEnd: function() {
+            console.log('touch ends');
+          },
+          touchMove: function( details ) {
             console.log( details.dx );
             console.log( details.dy );
             console.log( details.max );
             console.log( details.normalizedX );
             console.log( details.normalizedY );
+          }
         }
-    }, 
-    right: { 
-        type: 'joystick', 
+    },
+    right: {
+        type: 'joystick',
         position: { right: '15%', bottom: '15%' } ,
-        touchMove: function( details ) {
-            // Do something...
-        }
+        joystick: {
+          touchMove: function( details ) {
+             // Do something...
+           }
+       }
     }
 });
 ```
 ![GamePad 3](http://clay.io/images/controller/3.png)
 
-**Two large buttons at bottom**  
+**Two large buttons at bottom**
 ```
-GameController.init( { 
+GameController.init( {
 	left: {
-		position: { left: '50%', bottom: '5%' }, 
-		dpad: { 
-			up: false, 
-			down: false, 
-			left: { width: '50%', height: '10%' }, 
-			right: { width: '50%', height: '10%' } 
-		} 
-	}, 
+		position: { left: '50%', bottom: '5%' },
+		dpad: {
+			up: false,
+			down: false,
+			left: { width: '50%', height: '10%' },
+			right: { width: '50%', height: '10%' }
+		}
+	},
 	right: false
 } );
 ```
 ![GamePad 4](http://clay.io/images/controller/4.png)
 
-These examples are just the start - the customization allows for quite a bit to be done, 
+These examples are just the start - the customization allows for quite a bit to be done,
 and of course, the code can always be edited as well.
