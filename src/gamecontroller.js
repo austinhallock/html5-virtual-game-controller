@@ -5,38 +5,39 @@
 	var __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 	/* $.extend functionality */
 	function extend( target, src ) {
-		var options, name, copy, copyIsArray, clone,
+		var options = src, name, copy, copyIsArray, clone,
 			i = 1,
 			length = 2,
 			deep = true;
 		// Handle a deep copy situation
-		if( typeof target === "boolean" ) {
+		if( typeof target === 'boolean' ) {
 			deep = target;
 			// skip the boolean and the target
 			i = 2;
 		}
 		// Handle case when target is a string or something( possible in deep copy )
-		if( typeof target !== "object" && typeof target !== 'function' ) target = {};
+		if( typeof target !== 'object' && typeof target !== 'function' ) target = {};
 		// Only deal with non-null/undefined values
-		if( options = src ) {
+		if (! options) return target;
+
 			// Extend the base object
-			for( name in options ) {
-				src = target[name];
-				copy = options[name];
-				// Prevent never-ending loop
-				if( target === copy ) continue;
-				// Recurse if we're merging plain objects or arrays
-				if( deep && (typeof copy == 'object' || (copyIsArray = Object.prototype.toString.call(copy) === '[object Array]' ))) {
-					if( copyIsArray ) {
-						copyIsArray = false;
-						clone = src && Object.prototype.toString.call(  src  ) === '[object Array]' ? src : [];
-					} else clone = src && typeof src == 'object' ? src : {};
-					// Never move original objects, clone them
-					target[name] = extend( clone, copy );
-					// Don't bring in undefined values
-				} else if( typeof copy !== 'undefined' ) target[name] = copy;
-			}
+		for( name in options ) {
+			src = target[name];
+			copy = options[name];
+			// Prevent never-ending loop
+			if( target === copy ) continue;
+			// Recurse if we're merging plain objects or arrays
+			if( deep && (typeof copy == 'object' || (copyIsArray = Object.prototype.toString.call(copy) === '[object Array]' ))) {
+				if( copyIsArray ) {
+					copyIsArray = false;
+					clone = src && Object.prototype.toString.call(  src  ) === '[object Array]' ? src : [];
+				} else clone = src && typeof src == 'object' ? src : {};
+				// Never move original objects, clone them
+				target[name] = extend( clone, copy );
+				// Don't bring in undefined values
+			} else if( typeof copy !== 'undefined' ) target[name] = copy;
 		}
+
 		return target;
 	}
 
@@ -1052,7 +1053,7 @@
 	 * Shim for requestAnimationFrame
 	 */
 	(function() {
-	  if (typeof module !== "undefined") return;
+	  if (typeof module !== 'undefined') return;
 		var lastTime = 0;
 		var vendors = ['ms', 'moz', 'webkit', 'o'];
 		requestAnimationFrame = window.requestAnimationFrame;
@@ -1078,4 +1079,4 @@
 			cancelAnimationFrame = function(id){ clearTimeout( id ); };
 		}
 	}());
-})(typeof module !== "undefined" ? module.exports : window);
+})(typeof module !== 'undefined' ? module.exports : window);
