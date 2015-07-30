@@ -1063,7 +1063,7 @@
 				window[vendors[x]+'CancelRequestAnimationFrame'];
 		}
 
-		if ( !requestAnimationFrame )
+		if (!requestAnimationFrame){
 			requestAnimationFrame = function( callback, element ) {
 				var currTime = new Date().getTime();
 				var timeToCall = Math.max( 0, 16 - ( currTime - lastTime ) );
@@ -1072,7 +1072,10 @@
 				lastTime = currTime + timeToCall;
 				return id;
 			};
+		}
 
-		if ( !cancelAnimationFrame ) cancelAnimationFrame = function( id ) { clearTimeout( id ); };
+		if (!cancelAnimationFrame){
+			cancelAnimationFrame = function(id){ clearTimeout( id ); };
+		}
 	}());
 })(typeof module !== "undefined" ? module.exports : window);

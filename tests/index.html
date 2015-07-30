@@ -1,0 +1,26 @@
+<!Document html>
+<html>
+<head>
+<script src="gamecontroller.js"></script>
+<style>
+html, body, canvas {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+</style>
+</head>
+<body>
+<canvas></canvas>
+<script>
+var canvas = document.getElementsByTagName('canvas')[0];
+function resize(){
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+}
+resize();
+window.addEventListener(resize);
+GameController.init();
+</script>
+</body>
+</html>
