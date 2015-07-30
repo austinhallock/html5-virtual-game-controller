@@ -23,6 +23,6 @@ gulp.task('open', function(){
   .pipe(open({uri: 'http://localhost:3000'}));
 });
 
-gulp.task('serve', serve(['src', 'tests']));
+gulp.task('serve', serve(['src', 'tests', 'dist']));
 
 gulp.task('test', ['serve', 'open']);
