@@ -7,6 +7,9 @@ html, body, canvas {
   margin: 0;
   padding: 0;
   border: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
 }
 </style>
 </head>
@@ -18,9 +21,45 @@ function resize(){
   canvas.width = window.innerWidth;
   canvas.height = window.innerHeight;
 }
-resize();
 window.addEventListener(resize);
-GameController.init();
+resize();
+
+GameController.init({
+  left: {
+    type: 'joystick',
+    position: { left: '15%', bottom: '15%' },
+    joystick: {
+      touchStart: function() {
+        console.log('touch starts');
+      },
+      touchEnd: function() {
+        console.log('touch ends');
+      },
+      touchMove: function( details ) {
+        console.log( details.dx );
+        console.log( details.dy );
+        console.log( details.max );
+        console.log( details.normalizedX );
+        console.log( details.normalizedY );
+      }
+    }
+  },
+  right: {
+    position: { right: '5%' },
+    type: 'buttons',
+    buttons: [{
+        label: 'X',
+        fontSize: 23,
+        touchStart: function() {
+          console.log('X start');
+        }
+      },
+      false,
+      false,
+      false
+    ]
+  }
+});
 </script>
 </body>
 </html>
