@@ -1,9 +1,10 @@
 var gulp = require('gulp');
+var open = require('gulp-open');
 var rename = require('gulp-rename');
 var serve = require('gulp-serve');
 var uglify = require('gulp-uglify');
 
-gulp.task('default', function(){
+gulp.task('build', function(){
   gulp.src('src/gamecontroller.js')
   .pipe(uglify({mangle: {
     GameController: false,
@@ -17,4 +18,11 @@ gulp.task('default', function(){
   .pipe(gulp.dest('dist'));
 });
 
+gulp.task('open', function(){
+  gulp.src('tests/index.html')
+  .pipe(open({uri: 'http://localhost:3000'}));
+});
+
 gulp.task('serve', serve(['src', 'tests']));
+
+gulp.task('test', ['serve', 'open']);

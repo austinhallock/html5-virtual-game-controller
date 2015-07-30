@@ -4,15 +4,16 @@
   "version": "0.0.1",
   "repository": {
     "type": "git",
-    "url": "git@github.com:viljami/html5-virtual-game-controller.git"
+    "url": "git@github.com:austinhalloc/html5-virtual-game-controller.git"
   },
   "devDependencies": {
     "gulp": "^3.9.0",
+    "gulp-open": "^1.0.0",
     "gulp-rename": "^1.2.2",
     "gulp-serve": "^1.0.0",
     "gulp-uglify": "^1.2.0"
   },
   "scripts": {
-    "test": "open tests/index.html"
+    "test": "gulp test"
   }
 }
