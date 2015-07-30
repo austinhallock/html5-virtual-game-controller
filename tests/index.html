@@ -27,34 +27,35 @@ resize();
 GameController.init({
   left: {
     type: 'joystick',
-    position: { left: '15%', bottom: '15%' },
+    position: {left: '15%', bottom: '15%'},
     joystick: {
-      touchStart: function() {
+      touchStart: function(){
         console.log('touch starts');
       },
-      touchEnd: function() {
+      touchEnd: function(){
         console.log('touch ends');
       },
-      touchMove: function( details ) {
-        console.log( details.dx );
-        console.log( details.dy );
-        console.log( details.max );
-        console.log( details.normalizedX );
-        console.log( details.normalizedY );
+      touchMove: function(details){
+        console.log(details);
       }
     }
   },
   right: {
-    position: { right: '5%' },
+    position: {right: '15%', bottom: '20%'},
     type: 'buttons',
     buttons: [{
         label: 'X',
         fontSize: 23,
-        touchStart: function() {
+        touchStart: function(){
           console.log('X start');
         }
+      }, {
+        label: 'Y',
+        fontSize: 23,
+        touchStart: function(){
+          console.log('Y start');
+        }
       },
-      false,
       false,
       false
     ]
